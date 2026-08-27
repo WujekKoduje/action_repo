@@ -141,6 +141,10 @@ function initReveal() {
 /* ---------- Scroll-driven effects: nav, parallax, kinetic text ---------- */
 function initScrollFx() {
   const nav = $('#nav');
+  const navLinks = $$('#navLinks .nav__link');
+  const sections = navLinks
+    .map((a) => document.getElementById(a.dataset.target))
+    .filter(Boolean);
   const parallaxEls = $$('[data-parallax]');
   const kineticEls = $$('[data-kinetic]');
 
@@ -157,6 +161,16 @@ function initScrollFx() {
     const vh = window.innerHeight;
 
     if (nav) nav.classList.toggle('nav--scrolled', window.scrollY > 60);
+
+    if (navLinks.length) {
+      let active = null;
+      sections.forEach((sec) => {
+        if (sec.getBoundingClientRect().top <= vh * 0.4) active = sec.id;
+      });
+      navLinks.forEach((a) => {
+        a.classList.toggle('nav__link--active', a.dataset.target === active);
+      });
+    }
 
     if (!prefersReducedMotion) {
       kineticEls.forEach((el) => {
