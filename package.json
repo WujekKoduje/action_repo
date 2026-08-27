@@ -1,0 +1,16 @@
+{
+  "name": "wujek-baca-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio site for Łukasz Matysiak (Wujek Baca) — automotive & portrait photographer, Kraków.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "optimize:images": "node scripts/optimize-images.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.4",
+    "vite": "^8.2.2"
+  }
+}
