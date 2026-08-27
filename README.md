@@ -7,15 +7,19 @@ Built from the Claude Design handoff (`Wujek Baca Photography.dc.html`) as a
 static site with [Vite](https://vitejs.dev/). No framework — plain HTML, CSS and
 a single vanilla-JS module.
 
+Sections: hero · "every frame matters" · stats · brand marquee ·
+**01 Automotive** (5 full-bleed shots + EXIF) · **02 Portraits** (17-image
+masonry) · **03 Cars & People** · **04 BYLD** · contact.
+
 ## Stack
 
 | Concern      | Choice                                                        |
 | ------------ | ----------------------------------------------------------------- |
-| Bundler      | Vite 5 (`base: './'` so the build runs from any path)            |
+| Bundler      | Vite 8 (`base: './'` so the build runs from any path)            |
 | Markup       | `index.html`                                                     |
 | Styles       | `src/styles.css`                                                 |
-| Behaviour    | `src/main.js` — intro overlay, custom cursor, reveal-on-scroll, parallax, kinetic headline, brand marquee, lightbox |
-| Images       | `public/images/*` — web-sized WebP + optimized PNG logos         |
+| Behaviour    | `src/main.js` — intro overlay, sticky nav w/ active-section links, custom cursor, reveal-on-scroll, parallax, kinetic headline, brand marquee, lightbox |
+| Images       | `public/images/*` — web-sized WebP + optimized logos             |
 | Fonts        | Google Fonts (Archivo, Bricolage Grotesque, Instrument Serif)    |
 | Deploy       | GitHub Actions → GitHub Pages (`.github/workflows/deploy.yml`)   |
 
@@ -37,7 +41,7 @@ npm run preview     # serve the production build locally
 
 The originals from the design handoff (4000–7600 px, up to 17 MB each) are **not**
 committed. `public/images/` holds the optimized derivatives that the site
-actually loads (~5 MB total).
+actually loads (~11 MB total for ~30 photos + logos).
 
 To regenerate them you need the original `uploads/` folder from the handoff
 bundle:
