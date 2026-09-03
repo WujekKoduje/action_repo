@@ -1,11 +1,13 @@
 /* ============================================================
    Wujek Baca — Łukasz Matysiak portfolio
    Recreated from the Claude Design handoff (HTML/CSS/JS prototype).
+   Two pages share this sheet: the portfolio (index) and the gallery.
    ============================================================ */
 
 :root {
   --accent: oklch(0.72 0.13 45);
   --bg: #0d0c0a;
+  --panel: #15130f;
   --fg: #f3f0ea;
   --fg-soft: #d8d3c8;
   --muted: #9a958c;
@@ -30,6 +32,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: 'Archivo', system-ui, sans-serif;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -54,6 +57,10 @@ a:hover {
 
 img {
   max-width: 100%;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 /* ---------- Keyframes ---------- */
@@ -168,6 +175,7 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 20px;
   padding: 22px 40px;
   background: rgba(13, 12, 10, 0.4);
   -webkit-backdrop-filter: blur(10px);
@@ -176,9 +184,46 @@ img {
   transition: background 0.3s ease, padding 0.3s ease;
 }
 
-.nav--scrolled {
+.nav--scrolled,
+.nav--solid {
   background: rgba(13, 12, 10, 0.88);
+}
+
+.nav--scrolled {
   padding: 14px 40px;
+}
+
+.nav__left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav__menu-btn {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--accent);
+  font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.nav__menu-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav__menu-icon span {
+  width: 20px;
+  height: 2px;
+  background: currentColor;
 }
 
 .nav__name {
@@ -187,12 +232,14 @@ img {
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--fg);
+  text-decoration: none;
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.nav--scrolled .nav__name {
+.nav--scrolled .nav__name,
+.nav--solid .nav__name {
   opacity: 1;
   transform: translateY(0);
 }
@@ -242,12 +289,107 @@ img {
   .nav__links {
     display: none;
   }
+  .nav__menu-btn {
+    display: flex;
+  }
+  .nav__name,
+  .nav__link--contact {
+    display: none;
+  }
+}
+
+/* ---------- Mobile menu drawer ---------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  pointer-events: none;
+}
+
+.menu__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.menu__panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(78vw, 320px);
+  z-index: 59;
+  background: var(--panel);
+  border-right: 1px solid var(--hairline);
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 26px 28px;
+  gap: 32px;
+}
+
+.menu[data-open='true'] {
+  pointer-events: auto;
+}
+.menu[data-open='true'] .menu__overlay {
+  opacity: 1;
+}
+.menu[data-open='true'] .menu__panel {
+  transform: translateX(0);
+}
+
+.menu__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu__head span {
+  font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.menu__close {
+  background: none;
+  border: none;
+  color: var(--fg);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.menu__links {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.menu__links a {
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  color: var(--fg-soft);
+}
+
+.menu__ig {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--fg);
+  font-size: 13px;
+  letter-spacing: 0.05em;
 }
 
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
   height: 100vh;
+  height: 100dvh; /* keep the bottom bar on-screen under mobile browser chrome */
   overflow: hidden;
 }
 
@@ -410,6 +552,7 @@ img {
   font-size: clamp(36px, 5vw, 64px);
   font-weight: 800;
   color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat__label {
@@ -479,25 +622,18 @@ img {
   filter: brightness(0) invert(1);
 }
 
-/* Source files for these logos ship with a baked-in black/near-black
-   background (no alpha). Screen-blend drops the black against the dark
-   page so the mark reads, matching the prototype's intent. */
-.brands__logo--knockout {
-  mix-blend-mode: screen;
-}
-
 /* ---------- Work sections ---------- */
 .work {
-  padding: 200px 40px 60px;
+  padding: 120px 40px 60px;
+}
+
+.work--automotive {
+  padding-top: 100px;
 }
 
 /* Sticky-nav offset for in-page anchor navigation. */
 [id] {
   scroll-margin-top: 96px;
-}
-
-.work--automotive {
-  padding-top: 100px;
 }
 
 .work__head {
@@ -506,12 +642,12 @@ img {
   gap: 24px;
   border-bottom: 1px solid var(--hairline-strong);
   padding-bottom: 24px;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
-.work--auto-portraits .work__head,
-.work--byld .work__head {
-  margin-bottom: 40px;
+.work--automotive .work__head,
+.work--portraits .work__head {
+  margin-bottom: 60px;
 }
 
 .work__index {
@@ -528,11 +664,11 @@ img {
   letter-spacing: -0.01em;
 }
 
-/* 01 — Automotive */
+/* 01 — Automotive: a randomized full-bleed hero, then a preview grid */
 .auto {
   display: flex;
   flex-direction: column;
-  gap: 90px;
+  gap: 60px;
 }
 
 .auto-shot {
@@ -563,7 +699,7 @@ img {
   border: 1px solid rgba(243, 240, 234, 0.12);
 }
 
-/* 02 — Portraits (masonry) */
+/* Masonry preview grid — every section on the portfolio uses this */
 .masonry {
   columns: 280px 3;
   column-gap: 24px;
@@ -585,35 +721,46 @@ img {
   object-fit: cover;
 }
 
-/* 03 — Automotive portraits */
-.ap {
+/* "See all photos" card that closes each preview grid */
+.see-all {
+  break-inside: avoid;
+  margin-bottom: 24px;
+  height: 200px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg);
+  background: rgba(243, 240, 234, 0.03);
+  border: 1px dashed rgba(243, 240, 234, 0.25);
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
 
-.ap__item {
-  position: relative;
-  overflow: hidden;
+.see-all:hover {
+  color: var(--fg);
+  background: rgba(243, 240, 234, 0.06);
+  border-color: rgba(243, 240, 234, 0.4);
 }
 
-.ap__item--wide {
-  flex: 2 1 340px;
-  aspect-ratio: 3 / 2;
+.see-all__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
-.ap__item--tall {
-  flex: 1 1 220px;
-  aspect-ratio: 3 / 4;
+.see-all__label {
+  font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.08em;
 }
 
-.ap__item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.see-all__count {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
 }
 
-/* Shared caption on gallery figures */
+/* Hover caption shared by portfolio previews + gallery grid */
 .cap {
   position: absolute;
   left: 0;
@@ -632,27 +779,30 @@ img {
 
 .masonry__item:hover .cap,
 .masonry__item:focus-within .cap,
-.ap__item:hover .cap,
-.ap__item:focus-within .cap {
+.g-item:hover .cap,
+.g-item:focus-within .cap {
   opacity: 1;
 }
 
-/* Gentle zoom on hover for gallery imagery */
+/* Gentle zoom on hover for gallery imagery.
+   No persistent `will-change` here: setting it on every image forces each one
+   onto its own compositing layer, and past Chrome's layer budget some images
+   simply stop painting. The hover transition is GPU-accelerated on demand. */
 .auto-shot img,
 .masonry__item img,
-.ap__item img {
+.g-item img {
   cursor: pointer;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
 }
 
 .auto-shot:hover img,
 .masonry__item:hover img,
-.ap__item:hover img {
+.g-item:hover img {
   transform: scale(1.035);
 }
 
 .masonry__item:hover img,
-.ap__item:hover img {
+.g-item:hover img {
   filter: brightness(1.05);
 }
 
@@ -693,6 +843,106 @@ img {
   color: var(--fg-soft);
 }
 
+/* ---------- Gallery page ---------- */
+.gallery {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 140px 40px 60px;
+}
+
+.gallery__back,
+.gallery__back--btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.gallery__back:hover,
+.gallery__back--btn:hover {
+  color: var(--fg);
+}
+
+.gallery__back {
+  margin-bottom: 40px;
+}
+
+.gallery__head {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  border-bottom: 1px solid var(--hairline-strong);
+  padding-bottom: 24px;
+  margin-bottom: 40px;
+}
+
+.gallery__title {
+  margin: 0;
+  font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  font-size: clamp(32px, 6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.gallery__count {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.g-grid {
+  columns: 320px 3;
+  column-gap: 24px;
+}
+
+.g-item {
+  break-inside: avoid;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.g-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.g-chip {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  box-sizing: border-box;
+  background: rgba(13, 12, 10, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  padding: 8px 12px;
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--fg-soft);
+  line-height: 1.5;
+  border: 1px solid rgba(243, 240, 234, 0.12);
+}
+
+.gallery__back--btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+  padding: 18px;
+  color: var(--fg);
+  border: 1px solid rgba(243, 240, 234, 0.2);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.gallery__back--btn:hover {
+  background: rgba(243, 240, 234, 0.06);
+  border-color: rgba(243, 240, 234, 0.4);
+}
+
 /* ---------- Reveal-on-scroll ---------- */
 [data-reveal] {
   opacity: 0;
@@ -702,7 +952,7 @@ img {
 }
 
 .masonry__item[data-reveal],
-.ap__item[data-reveal] {
+.see-all[data-reveal] {
   transform: translateY(40px);
   transition-duration: 1s;
 }
@@ -716,10 +966,7 @@ img {
   transition-duration: 1s;
 }
 
-[data-reveal].is-revealed {
-  opacity: 1;
-  transform: none;
-}
+/* main.js reveals by setting inline opacity/transform on the element. */
 
 /* ---------- Custom cursor ---------- */
 .cursor-glow,
@@ -764,10 +1011,6 @@ img {
   justify-content: center;
   padding: 40px;
   cursor: zoom-out;
-}
-
-.lightbox[hidden] {
-  display: none;
 }
 
 .lightbox__img {
@@ -832,31 +1075,35 @@ img {
   }
 
   .work {
-    padding: 96px 20px 64px;
-  }
-  .work--automotive {
-    padding-top: 64px;
+    padding: 64px 20px 36px;
   }
   .work__head {
     gap: 14px;
     margin-bottom: 32px;
     padding-bottom: 18px;
   }
+  .work--automotive .work__head,
+  .work--portraits .work__head {
+    margin-bottom: 32px;
+  }
 
   .auto {
-    gap: 40px;
+    gap: 36px;
   }
   .auto-shot {
     height: auto;
     aspect-ratio: 3 / 2;
-    overflow: hidden;
     margin-left: -20px;
     margin-right: -20px;
     width: calc(100% + 40px);
   }
+  .auto-shot img {
+    height: auto;
+  }
   .exif {
     position: static;
     margin: 12px 20px 0;
+    width: auto;
     text-align: left;
   }
 
@@ -870,18 +1117,8 @@ img {
   .masonry__item {
     margin-bottom: 2px;
   }
-
-  .ap {
-    flex-direction: column;
-    gap: 2px;
-    margin-left: -20px;
-    margin-right: -20px;
-    width: calc(100% + 40px);
-  }
-  .ap__item--wide,
-  .ap__item--tall {
-    flex: 1 1 auto;
-    width: 100%;
+  .see-all {
+    margin: 2px 20px 0;
   }
 
   .hero__text {
@@ -898,6 +1135,20 @@ img {
 
   .contact {
     padding: 120px 20px;
+  }
+
+  .gallery {
+    padding: 120px 20px 48px;
+  }
+  .g-grid {
+    columns: 1;
+    column-gap: 0;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+  }
+  .g-item {
+    margin-bottom: 2px;
   }
 }
 
@@ -935,9 +1186,13 @@ img {
     transform: none !important;
     transition: none !important;
   }
+  .menu__panel,
+  .menu__overlay {
+    transition: none;
+  }
   .auto-shot:hover img,
   .masonry__item:hover img,
-  .ap__item:hover img {
+  .g-item:hover img {
     transform: none;
   }
 }
