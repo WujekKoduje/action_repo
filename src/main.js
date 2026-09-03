@@ -1,4 +1,8 @@
 import './styles.css';
+import { SECTIONS } from './gallery-data.js';
+import { initCursor } from './cursor.js';
+import { initMenu } from './menu.js';
+import { initLightbox } from './lightbox.js';
 
 /* ============================================================
    Wujek Baca portfolio — behaviour
@@ -13,10 +17,19 @@ const prefersReducedMotion = window.matchMedia(
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
+// A real in-page section fragment, e.g. "#products" (not "#" or "#!x").
+const sectionHash = () => /^#[A-Za-z][\w-]*$/.test(location.hash) && location.hash;
+
 /* ---------- Intro overlay ---------- */
 function initIntro() {
   const intro = $('#intro');
   if (!intro) return;
+
+  // Arriving with a section hash (e.g. back from the gallery) skips the intro.
+  if (sectionHash()) {
+    intro.remove();
+    return;
+  }
 
   document.body.style.overflow = 'hidden';
   let dismissed = false;
@@ -26,10 +39,7 @@ function initIntro() {
     dismissed = true;
     intro.classList.add('intro--hidden');
     document.body.style.overflow = '';
-    window.setTimeout(() => {
-      intro.hidden = true;
-      intro.style.display = 'none';
-    }, 650);
+    window.setTimeout(() => intro.remove(), 650);
     window.removeEventListener('wheel', dismiss);
     window.removeEventListener('touchstart', dismiss);
     window.removeEventListener('keydown', dismiss);
@@ -42,6 +52,24 @@ function initIntro() {
   window.addEventListener('click', dismiss);
 }
 
+/* ---------- Hash scroll on load (nav-height aware) ---------- */
+function initHashScroll() {
+  const hash = sectionHash();
+  if (!hash) return;
+  const doScroll = () => {
+    const target = document.getElementById(hash.slice(1));
+    if (!target) return;
+    const nav = $('#nav');
+    const navH = nav ? nav.getBoundingClientRect().height : 0;
+    const y = target.getBoundingClientRect().top + window.scrollY - navH - 16;
+    // `instant` — the retry cascade must not fight the global smooth scroll-behavior.
+    window.scrollTo({ top: Math.max(y, 0), behavior: 'instant' });
+  };
+  requestAnimationFrame(doScroll);
+  [50, 200, 500, 1000].forEach((ms) => setTimeout(doScroll, ms));
+  window.addEventListener('load', doScroll, { once: true });
+}
+
 /* ---------- Hero text entrance ---------- */
 function initHeroText() {
   const heroText = $('#heroText');
@@ -49,52 +77,56 @@ function initHeroText() {
   requestAnimationFrame(() => heroText.classList.add('hero__text--in'));
 }
 
-/* ---------- Custom cursor ---------- */
-function initCursor() {
-  if (prefersReducedMotion) return;
-  if (window.matchMedia('(pointer: coarse)').matches) return;
+/* ---------- Brand name → smooth scroll to top ---------- */
+function initScrollTop() {
+  $$('[data-scrolltop]').forEach((el) =>
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+  );
+}
 
-  const dot = $('#cursorDot');
-  const glow = $('#cursorGlow');
-  if (!dot || !glow) return;
-
-  const accent =
-    getComputedStyle(document.documentElement)
-      .getPropertyValue('--accent')
-      .trim() || '#f3f0ea';
-
-  document.body.style.cursor = 'none';
-
-  const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  const cur = { x: pos.x, y: pos.y };
-  const gl = { x: pos.x, y: pos.y };
-
-  window.addEventListener('mousemove', (e) => {
-    pos.x = e.clientX;
-    pos.y = e.clientY;
-    dot.style.opacity = '1';
-    glow.style.opacity = '0.35';
-    const onImage = e.target instanceof Element && e.target.tagName === 'IMG';
-    dot.style.width = dot.style.height = onImage ? '16px' : '10px';
-    dot.style.background = onImage ? accent : '#f3f0ea';
-    glow.style.width = glow.style.height = onImage ? '110px' : '70px';
+/* ---------- "See all" card counts (kept in sync with the data) ---------- */
+function initSeeAllCounts() {
+  $$('[data-count-for]').forEach((el) => {
+    const key = el.dataset.countFor;
+    const n = SECTIONS[key]?.items.length;
+    if (n) el.textContent = `${n} PHOTOS`;
   });
+}
 
-  document.addEventListener('mouseleave', () => {
-    dot.style.opacity = '0';
-    glow.style.opacity = '0';
+/* ---------- Automotive: randomized hero + preview ---------- */
+function initAutomotive() {
+  const heroImg = $('#autoHeroImg');
+  const heroExif = $('#autoHeroExif');
+  const grid = $('#autoGrid');
+  if (!heroImg || !grid) return;
+
+  // The prototype's random pool is every automotive shot except index 4.
+  const pool = SECTIONS.automotive.items.filter((_, i) => i !== 4);
+  if (pool.length < 5) return;
+
+  const heroIdx = Math.floor(Math.random() * pool.length);
+  const hero = pool[heroIdx];
+  const rest = pool.filter((_, i) => i !== heroIdx).slice(0, 4);
+
+  heroImg.src = hero.src;
+  heroImg.dataset.full = hero.full;
+  heroImg.alt = hero.alt;
+  if (heroExif && hero.camera) {
+    heroExif.innerHTML = `${hero.camera}<br>${hero.settings || ''}`;
+  }
+
+  $$('.masonry__item img', grid).forEach((img, i) => {
+    const item = rest[i];
+    if (!item) return;
+    img.src = item.src;
+    img.dataset.full = item.full;
+    img.alt = item.alt;
+    const cap = img.parentElement.querySelector('.cap');
+    if (cap) cap.textContent = item.camera || '';
   });
-
-  const tick = () => {
-    cur.x += (pos.x - cur.x) * 0.35;
-    cur.y += (pos.y - cur.y) * 0.35;
-    gl.x += (pos.x - gl.x) * 0.15;
-    gl.y += (pos.y - gl.y) * 0.15;
-    dot.style.transform = `translate3d(${cur.x}px, ${cur.y}px, 0) translate(-50%, -50%)`;
-    glow.style.transform = `translate3d(${gl.x}px, ${gl.y}px, 0) translate(-50%, -50%)`;
-    requestAnimationFrame(tick);
-  };
-  tick();
 }
 
 /* ---------- Reveal on scroll ---------- */
@@ -125,7 +157,6 @@ function initReveal() {
   );
   els.forEach((el) => io.observe(el));
 
-  // Safety net: reveal anything already scrolled past on load.
   const forcePassed = () => {
     els.forEach((el) => {
       if (el.getBoundingClientRect().top < window.innerHeight) {
@@ -138,13 +169,51 @@ function initReveal() {
   forcePassed();
 }
 
-/* ---------- Scroll-driven effects: nav, parallax, kinetic text ---------- */
+/* ---------- Stats count-up ---------- */
+function initStats() {
+  const els = $$('.stat__num[data-count]');
+  if (!els.length) return;
+
+  // Reset to 0 up front (HTML ships the final value for the no-JS case) so the
+  // numbers don't visibly snap back when they scroll into view.
+  if (!prefersReducedMotion) els.forEach((el) => (el.textContent = '0+'));
+
+  const run = (el) => {
+    const target = parseInt(el.dataset.count, 10) || 0;
+    if (prefersReducedMotion) {
+      el.textContent = `${target}+`;
+      return;
+    }
+    const duration = 1400;
+    const start = performance.now();
+    const step = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = `${Math.round(eased * target)}+`;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = `${target}+`;
+    };
+    requestAnimationFrame(step);
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          run(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.4 }
+  );
+  els.forEach((el) => io.observe(el));
+}
+
+/* ---------- Scroll-driven effects: nav, active link, kinetic, parallax ---------- */
 function initScrollFx() {
   const nav = $('#nav');
   const navLinks = $$('#navLinks .nav__link');
-  const sections = navLinks
-    .map((a) => document.getElementById(a.dataset.target))
-    .filter(Boolean);
   const parallaxEls = $$('[data-parallax]');
   const kineticEls = $$('[data-kinetic]');
 
@@ -164,24 +233,24 @@ function initScrollFx() {
 
     if (navLinks.length) {
       let active = null;
-      sections.forEach((sec) => {
-        if (sec.getBoundingClientRect().top <= vh * 0.4) active = sec.id;
-      });
       navLinks.forEach((a) => {
-        a.classList.toggle('nav__link--active', a.dataset.target === active);
+        const sec = document.getElementById(a.dataset.target);
+        if (sec && sec.getBoundingClientRect().top <= vh * 0.4) active = a.dataset.target;
       });
+      navLinks.forEach((a) =>
+        a.classList.toggle('nav__link--active', a.dataset.target === active)
+      );
     }
 
     if (!prefersReducedMotion) {
       kineticEls.forEach((el) => {
+        if (el.dataset.kineticDone) return;
         const dir = parseFloat(el.dataset.kinetic);
         const rect = el.getBoundingClientRect();
-        const progress = Math.min(
-          1,
-          Math.max(0, (vh * 0.85 - rect.top) / (vh * 0.5))
-        );
+        const progress = Math.min(1, Math.max(0, (vh * 0.85 - rect.top) / (vh * 0.5)));
         el.style.opacity = String(progress);
         el.style.transform = `translateX(${(1 - progress) * dir * 160}px)`;
+        if (progress >= 1) el.dataset.kineticDone = '1';
       });
 
       parallaxEls.forEach((el) => {
@@ -206,87 +275,22 @@ function initScrollFx() {
   update();
 }
 
-/* ---------- Lightbox ---------- */
-function initLightbox() {
-  const box = $('#lightbox');
-  const boxImg = $('#lbImg');
-  if (!box || !boxImg) return;
-
-  const gallery = $$(
-    '.hero__bg, .auto-shot img, .masonry__item img, .ap__item img'
-  );
-  if (!gallery.length) return;
-
-  let index = -1;
-  let lastFocus = null;
-  const bodyOverflow = () => document.body.style.overflow;
-
-  const srcFor = (img) => img.dataset.full || img.currentSrc || img.src;
-
-  const show = (i) => {
-    index = (i + gallery.length) % gallery.length;
-    const img = gallery[index];
-    boxImg.src = srcFor(img);
-    boxImg.alt = img.alt || '';
-  };
-
-  const open = (i) => {
-    lastFocus = document.activeElement;
-    show(i);
-    box.hidden = false;
-    document.body.dataset.prevOverflow = bodyOverflow();
-    document.body.style.overflow = 'hidden';
-    $('#lbClose', box)?.focus();
-  };
-
-  const close = () => {
-    box.hidden = true;
-    document.body.style.overflow = document.body.dataset.prevOverflow || '';
-    delete document.body.dataset.prevOverflow;
-    if (lastFocus instanceof HTMLElement) lastFocus.focus();
-    index = -1;
-  };
-
-  const step = (dir) => {
-    if (index < 0) return;
-    show(index + dir);
-  };
-
-  gallery.forEach((img, i) => {
-    img.addEventListener('click', () => open(i));
-  });
-
-  box.addEventListener('click', close);
-  boxImg.addEventListener('click', (e) => e.stopPropagation());
-  $('#lbClose', box)?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    close();
-  });
-  $('#lbPrev', box)?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    step(-1);
-  });
-  $('#lbNext', box)?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    step(1);
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (box.hidden) return;
-    if (e.key === 'Escape') close();
-    else if (e.key === 'ArrowLeft') step(-1);
-    else if (e.key === 'ArrowRight') step(1);
-  });
-}
-
 /* ---------- Boot ---------- */
 function boot() {
   initIntro();
+  initHashScroll();
   initHeroText();
+  initScrollTop();
+  initSeeAllCounts();
+  initAutomotive();
   initCursor();
+  initMenu();
   initReveal();
+  initStats();
   initScrollFx();
-  initLightbox();
+  initLightbox({
+    getGroup: (img) => $$('img', img.closest('[data-lightbox]') || document),
+  });
 }
 
 if (document.readyState === 'loading') {

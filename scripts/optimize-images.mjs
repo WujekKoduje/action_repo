@@ -1,102 +1,77 @@
 /**
- * One-off asset pipeline for the Wujek Baca portfolio.
+ * Asset pipeline for the Wujek Baca portfolio.
  *
  * Reads the original full-resolution photos from the Claude Design handoff
- * bundle (4000-7600px, up to 17 MB each) and writes web-sized WebP + optimized
- * PNG logos into `public/images/`. The optimized outputs are committed; the
- * multi-hundred-MB originals are not.
+ * bundle (4000-8000 px, up to 17 MB each) and writes:
+ *   - web-sized WebP derivatives into `public/images/`
+ *   - `src/gallery-data.js` (the data the portfolio + gallery pages import)
+ *
+ * The optimized outputs and `gallery-data.js` are committed; the ~500 MB of
+ * originals are not.
  *
  * Usage:
  *   node scripts/optimize-images.mjs [path-to-uploads-dir]
- *
- * The source dir defaults to the handoff location and can be overridden with
- * the first CLI arg or the WB_UPLOADS env var.
  */
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile, copyFile } from 'node:fs/promises';
+import { mkdir, writeFile, copyFile, readdir, rm } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { SECTIONS, SECTION_ORDER, HERO, LOGOS } from './photo-manifest.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
 const OUT_DIR = join(REPO_ROOT, 'public', 'images');
+const DATA_FILE = join(REPO_ROOT, 'src', 'gallery-data.js');
+
+const DATA_ONLY = process.argv.includes('--data-only');
 
 const SRC_DIR =
-  process.argv[2] ||
+  process.argv.find((a) => !a.startsWith('-') && a !== process.argv[0] && a !== process.argv[1]) ||
   process.env.WB_UPLOADS ||
-  'C:/Users/LukaszMatysiak/Downloads/Wujek Baca portfolio website-handoff (1)/wujek-baca-portfolio-website/project/uploads';
+  'C:/Users/LukaszMatysiak/Downloads/Wujek Baca portfolio website-handoff (2)/wujek-baca-portfolio-website/project/uploads';
 
-/**
- * @typedef {Object} PhotoJob
- * @property {string} src       source filename in the uploads dir
- * @property {string} out       output basename (no extension)
- * @property {number} display   max width of the in-page WebP
- * @property {number} [full]    max width of the lightbox WebP (omit to skip)
- */
-
-/** @type {PhotoJob[]} */
-const PHOTOS = [
-  // Hero — full-bleed background, doubles as its own lightbox source.
-  { src: '20251209-DSCF9901-b064a99d.jpeg', out: 'hero', display: 2560 },
-
-  // 01 — Automotive. Full-width shots; display res is already lightbox-worthy.
-  { src: 'photos-1787779904041-6lbn.jpg', out: 'auto-1', display: 2560 },
-  { src: 'photos-1787779939849-jwso.jpg', out: 'auto-2', display: 2560 },
-  { src: 'photos-1787780007208-panh.jpg', out: 'auto-3', display: 2560 },
-  { src: 'photos-1787780139200-x8s1.jpg', out: 'auto-4', display: 2560 },
-  { src: 'photos-1787779910064-h07n.jpg', out: 'auto-5', display: 2560 },
-
-  // 02 — Portraits. Small on-page (masonry columns), bigger for the lightbox.
-  { src: 'photos-1787780218754-i1us.jpg', out: 'portrait-1', display: 1400, full: 2560 },
-  { src: 'photos-1787780336071-mvna.jpg', out: 'portrait-2', display: 1400, full: 2560 },
-  { src: 'photos-1787780269681-6lxs.jpg', out: 'portrait-3', display: 1400, full: 2560 },
-  { src: 'photos-1787780382813-x7am.jpg', out: 'portrait-4', display: 1400, full: 2560 },
-  { src: 'photos-1787780204983-fbq3.jpg', out: 'portrait-5', display: 1400, full: 2560 },
-  { src: 'photos-1787780325563-aeoi.jpg', out: 'portrait-6', display: 1400, full: 2560 },
-  { src: 'photos-1787780015524-50br.jpg', out: 'portrait-7', display: 1400, full: 2560 },
-  { src: '20260613-DSCF4919.jpeg', out: 'portrait-8', display: 1400, full: 2560 },
-  { src: '20260613-DSCF5057.jpeg', out: 'portrait-9', display: 1400, full: 2560 },
-  { src: '20260704-DSCF6010.jpeg', out: 'portrait-10', display: 1400, full: 2560 },
-  { src: '20260704-DSCF6067.jpeg', out: 'portrait-11', display: 1400, full: 2560 },
-  { src: '20260708-DSCF6304.jpeg', out: 'portrait-12', display: 1400, full: 2560 },
-  { src: '20260708-DSCF6347.jpeg', out: 'portrait-13', display: 1400, full: 2560 },
-  { src: '20260708-DSCF6490.jpeg', out: 'portrait-14', display: 1400, full: 2560 },
-  { src: '20260708-DSCF6523.jpeg', out: 'portrait-15', display: 1400, full: 2560 },
-  { src: '20260708-DSCF6544-3.jpeg', out: 'portrait-16', display: 1400, full: 2560 },
-  { src: '20260708-DSCF6555.jpeg', out: 'portrait-17', display: 1400, full: 2560 },
-
-  // 03 — Cars & People.
-  { src: 'photos-1787779976063-y6kn.jpg', out: 'autoportrait-1', display: 1600, full: 2560 },
-  { src: 'photos-1787780287260-mq7k.jpg', out: 'autoportrait-2', display: 1600, full: 2560 },
-  { src: 'photos-1787780248177-52ls.jpg', out: 'autoportrait-3', display: 1600, full: 2560 },
-
-  // 04 — BYLD.
-  { src: '20260714-DSCF6895-a4c0d101.jpeg', out: 'byld-1', display: 1600, full: 2560 },
-  { src: '20260714-DSCF6838-3cd498ae.jpeg', out: 'byld-2', display: 1600, full: 2560 },
-  { src: '20260714-DSCF6851-5c3167ea.jpeg', out: 'byld-3', display: 1600, full: 2560 },
-  { src: '20260714-DSCF6843.jpeg', out: 'byld-4', display: 1600, full: 2560 },
-  { src: '20260714-DSCF6855-002171b7.jpeg', out: 'byld-5', display: 1600, full: 2560 },
-];
-
-/** @type {{src: string, out: string, width: number}[]} */
-const LOGOS = [
-  { src: 'pasted-1787818080325-0.png', out: 'logo-workstations.png', width: 600 },
-  { src: 'pasted-1787818173222-0.png', out: 'logo-kpr.png', width: 320 },
-  { src: 'pasted-1787818294729-0.png', out: 'logo-elitecars.png', width: 360 },
-  { src: 'PXN_White@4x.png', out: 'logo-pxn.png', width: 584 },
-  { src: 'pasted-1787818717609-0.png', out: 'logo-naruczaju.png', width: 320 },
-  { src: 'pasted-1787818782197-0.png', out: 'logo-sassy.png', width: 360 },
-  { src: 'LOGO_KEMPSON_white.avif', out: 'logo-kempson.png', width: 480 },
-];
-
-const SVG_LOGOS = [{ src: 'byld-pro-logo.svg', out: 'logo-byld.svg' }];
+// Per-role output sizing. `display` feeds the on-page grids; `full` feeds the
+// lightbox. Automotive shots double as the full-bleed portfolio hero, so they
+// get a larger display size.
+const SIZING = {
+  automotive: { display: 1800, displayQ: 78, full: 2200, fullQ: 80 },
+  default: { display: 1200, displayQ: 76, full: 2000, fullQ: 78 },
+};
 
 async function makeWebp(srcPath, outPath, width, quality) {
-  await sharp(srcPath)
+  const info = await sharp(srcPath)
     .rotate() // bake in EXIF orientation
     .resize({ width, withoutEnlargement: true, fit: 'inside' })
     .webp({ quality })
+    .toFile(outPath);
+  return { w: info.width, h: info.height };
+}
+
+function chipText(item) {
+  return item.camera && item.settings ? `${item.camera} · ${item.settings}` : undefined;
+}
+
+/**
+ * Rebuild a logo that was baked onto an opaque dark background as a real
+ * transparent PNG: key the (dark) background out on luminance, brighten the
+ * mark, trim, resize. Two passes so the geometry ops run on a normal pipeline.
+ */
+async function keyLogo(srcPath, outPath, k) {
+  let base = sharp(srcPath).removeAlpha();
+  if (k.extract) base = base.extract(k.extract);
+
+  const rgbPng = await base.clone().linear(...(k.rgbLin || [1, 0])).png().toBuffer();
+  let mp = base.clone().greyscale();
+  mp = k.threshold != null ? mp.threshold(k.threshold) : mp.linear(...(k.maskLin || [1, 0]));
+  if (k.blur) mp = mp.blur(k.blur);
+  const maskPng = await mp.png().toBuffer();
+
+  const rgba = await sharp(rgbPng).joinChannel(maskPng).png().toBuffer();
+  await sharp(rgba)
+    .trim({ threshold: 18 })
+    .resize({ width: k.width || 360, withoutEnlargement: true })
+    .png({ compressionLevel: 9 })
     .toFile(outPath);
 }
 
@@ -108,47 +83,85 @@ async function run() {
   }
 
   await mkdir(OUT_DIR, { recursive: true });
-  console.log(`Source : ${SRC_DIR}`);
+  console.log(`Source : ${DATA_ONLY ? '(data-only — reading existing outputs)' : SRC_DIR}`);
   console.log(`Output : ${OUT_DIR}\n`);
 
-  for (const job of PHOTOS) {
-    const srcPath = join(SRC_DIR, job.src);
-    if (!existsSync(srcPath)) {
-      console.warn(`  skip  ${job.src} (missing)`);
-      continue;
-    }
-    await makeWebp(srcPath, join(OUT_DIR, `${job.out}.webp`), job.display, 80);
-    console.log(`  ok    ${job.out}.webp  (<= ${job.display}px)`);
-    if (job.full) {
-      await makeWebp(srcPath, join(OUT_DIR, `${job.out}-full.webp`), job.full, 80);
-      console.log(`  ok    ${job.out}-full.webp  (<= ${job.full}px)`);
-    }
+  // Track every file we (re)generate so stale outputs can be pruned.
+  const produced = new Set();
+  const missing = [];
+
+  // ---- Hero -------------------------------------------------------------
+  if (!DATA_ONLY) {
+    const src = join(SRC_DIR, HERO.file);
+    if (existsSync(src)) {
+      await makeWebp(src, join(OUT_DIR, 'hero.webp'), 2560, 82);
+      produced.add('hero.webp');
+      console.log('  ok    hero.webp');
+    } else missing.push(HERO.file);
   }
 
+  // ---- Section photos -------------------------------------------------
+  const data = {};
+  for (const key of SECTION_ORDER) {
+    const section = SECTIONS[key];
+    const sizing = SIZING[key] || SIZING.default;
+    const items = [];
+    for (const item of section.items) {
+      const display = `${item.slug}.webp`;
+      const full = `${item.slug}-full.webp`;
+      let dim;
+      if (DATA_ONLY) {
+        if (!existsSync(join(OUT_DIR, display))) { missing.push(display); continue; }
+        const m = await sharp(join(OUT_DIR, display)).metadata();
+        dim = { w: m.width, h: m.height };
+      } else {
+        const src = join(SRC_DIR, item.file);
+        if (!existsSync(src)) { missing.push(item.file); continue; }
+        dim = await makeWebp(src, join(OUT_DIR, display), sizing.display, sizing.displayQ);
+        await makeWebp(src, join(OUT_DIR, full), sizing.full, sizing.fullQ);
+      }
+      produced.add(display);
+      produced.add(full);
+      items.push({
+        src: `./images/${display}`,
+        full: `./images/${full}`,
+        w: dim.w,
+        h: dim.h,
+        alt: item.alt,
+        ...(chipText(item) ? { chip: chipText(item) } : {}),
+        ...(item.camera ? { camera: item.camera } : {}),
+        ...(item.settings ? { settings: item.settings } : {}),
+        ...(item.caption ? { caption: item.caption } : {}),
+      });
+    }
+    data[key] = { title: section.title, items };
+    console.log(`  ok    ${key}  (${items.length} photos)`);
+  }
+
+  // ---- Logos --------------------------------------------------------
   for (const logo of LOGOS) {
-    const srcPath = join(SRC_DIR, logo.src);
-    if (!existsSync(srcPath)) {
-      console.warn(`  skip  ${logo.src} (missing)`);
+    if (DATA_ONLY) { produced.add(logo.out); continue; }
+    const src = join(SRC_DIR, logo.file);
+    if (!existsSync(src)) {
+      missing.push(logo.file);
       continue;
     }
-    await sharp(srcPath)
-      .resize({ width: logo.width, withoutEnlargement: true, fit: 'inside' })
-      .png({ compressionLevel: 9, palette: true })
-      .toFile(join(OUT_DIR, logo.out));
+    const dst = join(OUT_DIR, logo.out);
+    if (logo.out.endsWith('.svg')) {
+      await copyFile(src, dst);
+    } else if (logo.mode === 'key') {
+      await keyLogo(src, dst, logo.key);
+    } else {
+      await sharp(src)
+        .resize({ width: logo.width, withoutEnlargement: true, fit: 'inside' })
+        .png({ compressionLevel: 9, palette: true })
+        .toFile(dst);
+    }
+    produced.add(logo.out);
     console.log(`  ok    ${logo.out}`);
   }
 
-  for (const logo of SVG_LOGOS) {
-    const srcPath = join(SRC_DIR, logo.src);
-    if (!existsSync(srcPath)) {
-      console.warn(`  skip  ${logo.src} (missing)`);
-      continue;
-    }
-    await copyFile(srcPath, join(OUT_DIR, logo.out));
-    console.log(`  ok    ${logo.out}`);
-  }
-
-  // Simple aperture favicon in the site accent colour.
+  // ---- Favicon -----------------------------------------------------
   const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="6" fill="#0d0c0a"/>
   <g fill="none" stroke="#d98a4b" stroke-width="2">
@@ -156,9 +169,35 @@ async function run() {
     <path d="M16 7l4.5 7.8M25 16l-9 0M20.5 24.2l-4.5-7.8M7 16l9 0M11.5 24.2l4.5-7.8M11.5 7.8l4.5 7.8"/>
   </g>
 </svg>\n`;
-  await writeFile(join(REPO_ROOT, 'public', 'favicon.svg'), favicon, 'utf8');
-  console.log('  ok    favicon.svg');
+  if (!DATA_ONLY) {
+    await writeFile(join(REPO_ROOT, 'public', 'favicon.svg'), favicon, 'utf8');
+    produced.add('favicon.svg');
+    console.log('  ok    favicon.svg');
+  }
 
+  // ---- Prune stale outputs ---------------------------------------
+  if (!DATA_ONLY) {
+    for (const f of await readdir(OUT_DIR)) {
+      if (!produced.has(f)) {
+        await rm(join(OUT_DIR, f));
+        console.log(`  rm    ${f}  (stale)`);
+      }
+    }
+  }
+
+  // ---- Emit gallery-data.js ------------------------------------
+  const banner =
+    '// GENERATED by scripts/optimize-images.mjs from scripts/photo-manifest.mjs — do not edit.\n';
+  const body = `export const SECTIONS = ${JSON.stringify(data, null, 2)};\n\n` +
+    `export const SECTION_ORDER = ${JSON.stringify(SECTION_ORDER)};\n\n` +
+    'export default SECTIONS;\n';
+  await writeFile(DATA_FILE, banner + '\n' + body, 'utf8');
+  console.log(`\n  ok    ${DATA_FILE}`);
+
+  if (missing.length) {
+    console.warn(`\n  WARNING: ${missing.length} source file(s) not found:`);
+    missing.forEach((f) => console.warn(`    - ${f}`));
+  }
   console.log('\nDone.');
 }
 
