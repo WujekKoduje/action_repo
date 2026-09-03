@@ -12,9 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+# One run per ref. Cancel superseded PR builds, but never cancel an in-flight
+# main run — a merge or manual dispatch queues behind the current deploy
+# instead of killing it (which previously left Pages half-deployed).
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
