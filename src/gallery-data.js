@@ -202,23 +202,23 @@ export const SECTIONS = {
         "full": "./images/portrait-7-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Portrait on a pier boardwalk",
-        "caption": "On the boardwalk, golden hour."
+        "alt": "Portrait, woman in a red dress leaning on a black car at dusk",
+        "caption": "Red dress, dusk light on the hood."
       },
       {
         "src": "./images/portrait-8.webp",
         "full": "./images/portrait-8-full.webp",
         "w": 1200,
         "h": 800,
-        "alt": "Portrait in silver dress, garden backdrop",
-        "caption": "Silver dress, soft green backdrop."
+        "alt": "Portrait inside a car, seatbelt across the frame",
+        "caption": "In the car, candid and unposed."
       },
       {
         "src": "./images/portrait-9.webp",
         "full": "./images/portrait-9-full.webp",
         "w": 1200,
         "h": 800,
-        "alt": "Portrait in white lace top inside a garage",
+        "alt": "Portrait in a white lace top inside a garage",
         "caption": "White lace, workshop backdrop."
       },
       {
@@ -226,32 +226,32 @@ export const SECTIONS = {
         "full": "./images/portrait-10-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Black and white portrait in pleated skirt outdoors",
-        "caption": "Monochrome, open field at dusk."
+        "alt": "Portrait in a trench coat against a garage door",
+        "caption": "Trench coat, evening light on steel."
       },
       {
         "src": "./images/portrait-11.webp",
         "full": "./images/portrait-11-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Kinetic water sculpture with model out of focus",
-        "caption": "Kinetic fountain, layered depth of field."
+        "alt": "Black and white portrait in a pleated skirt outdoors",
+        "caption": "Monochrome, open field at dusk."
       },
       {
         "src": "./images/portrait-12.webp",
         "full": "./images/portrait-12-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Portrait in metallic dress beside water sculpture",
-        "caption": "Metallic dress, industrial fountain backdrop."
+        "alt": "Portrait in a silver dress against a garden backdrop",
+        "caption": "Silver dress, soft green backdrop."
       },
       {
         "src": "./images/portrait-13.webp",
         "full": "./images/portrait-13-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Portrait leaning against wire mesh wall",
-        "caption": "Leaning into the frame, wire mesh texture."
+        "alt": "Portrait against greenery, hand in her hair",
+        "caption": "Green backdrop, quiet upward gaze."
       },
       {
         "src": "./images/portrait-14.webp",
@@ -266,24 +266,24 @@ export const SECTIONS = {
         "full": "./images/portrait-15-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Portrait against greenery, hand in hair",
-        "caption": "Green backdrop, quiet upward gaze."
+        "alt": "Kinetic water sculpture with the model out of focus",
+        "caption": "Kinetic fountain, layered depth of field."
       },
       {
         "src": "./images/portrait-16.webp",
         "full": "./images/portrait-16-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Portrait inside a car, seatbelt across frame",
-        "caption": "In the car, candid and unposed."
+        "alt": "Portrait in a metallic dress beside a water sculpture",
+        "caption": "Metallic dress, industrial fountain backdrop."
       },
       {
         "src": "./images/portrait-17.webp",
         "full": "./images/portrait-17-full.webp",
         "w": 1200,
         "h": 1800,
-        "alt": "Portrait in trench coat against garage door",
-        "caption": "Trench coat, evening light on steel."
+        "alt": "Portrait leaning against a wire-mesh wall",
+        "caption": "Leaning into the frame, wire-mesh texture."
       }
     ]
   },
