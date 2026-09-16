@@ -211,9 +211,22 @@ function initStats() {
 }
 
 /* ---------- Scroll-driven effects: nav, active link, kinetic, parallax ---------- */
+// Sections tracked to build the CONTACT link's "?from=" — includes the
+// bottom #contact teaser itself, unlike navLinks which only covers the 5
+// highlighted nav items.
+const CONTACT_FROM_SECTIONS = [
+  'automotive',
+  'portraits',
+  'automotive-portraits',
+  'products',
+  'pets',
+  'contact',
+];
+
 function initScrollFx() {
   const nav = $('#nav');
   const navLinks = $$('#navLinks .nav__link');
+  const contactLinks = $$('#navContact, #menuContact');
   const parallaxEls = $$('[data-parallax]');
   const kineticEls = $$('[data-kinetic]');
 
@@ -231,15 +244,18 @@ function initScrollFx() {
 
     if (nav) nav.classList.toggle('nav--scrolled', window.scrollY > 60);
 
-    if (navLinks.length) {
+    if (navLinks.length || contactLinks.length) {
       let active = null;
-      navLinks.forEach((a) => {
-        const sec = document.getElementById(a.dataset.target);
-        if (sec && sec.getBoundingClientRect().top <= vh * 0.4) active = a.dataset.target;
+      CONTACT_FROM_SECTIONS.forEach((id) => {
+        const sec = document.getElementById(id);
+        if (sec && sec.getBoundingClientRect().top <= vh * 0.4) active = id;
       });
       navLinks.forEach((a) =>
         a.classList.toggle('nav__link--active', a.dataset.target === active)
       );
+      contactLinks.forEach((a) => {
+        a.href = `contact.html?from=${active || 'automotive'}`;
+      });
     }
 
     if (!prefersReducedMotion) {

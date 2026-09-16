@@ -96,6 +96,23 @@ async function run() {
       s === 200 || s === 304 ? ok(`${u} → ${s}`) : fail(`${u} → ${s}`);
     }
 
+    // ---- contact.html ----
+    console.log('\ncontact.html:');
+    const contact = await (await fetch(`${BASE}/contact.html`)).text();
+    for (const u of assetUrls(contact)) {
+      const s = await head(BASE + u);
+      s === 200 || s === 304 ? ok(`${u} → ${s}`) : fail(`${u} → ${s}`);
+    }
+    contact.includes('action="https://api.web3forms.com/submit"')
+      ? ok('contact form posts to web3forms')
+      : fail('contact form is missing the web3forms action');
+    /name="access_key" value="[0-9a-f-]{36}"/.test(contact)
+      ? ok('contact form has an access_key')
+      : fail('contact form is missing access_key');
+    ['name', 'email', 'message'].every((f) => contact.includes(`name="${f}"`))
+      ? ok('contact form has name/email/message fields')
+      : fail('contact form is missing a required field');
+
     // ---- gallery.html + every section ----
     const { SECTIONS, SECTION_ORDER } = await import(
       pathToFileURL(resolve(ROOT, 'src/gallery-data.js')).href + `?t=${Date.now()}`
