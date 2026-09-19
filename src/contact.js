@@ -1,5 +1,4 @@
 import './styles.css';
-import { initCursor } from './cursor.js';
 import { initMenu } from './menu.js';
 
 /* ============================================================
@@ -18,6 +17,7 @@ const VALID_SECTIONS = [
   'automotive-portraits',
   'products',
   'pets',
+  'camera-experience',
   'contact',
 ];
 
@@ -97,7 +97,6 @@ function initForm() {
 }
 
 function boot() {
-  initCursor();
   initMenu();
   initSentFromRedirect();
   initBackLinks();

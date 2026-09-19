@@ -554,6 +554,13 @@ export const SECTIONS = {
         "alt": "Black cocker spaniel looking up at golden hour, tongue out"
       },
       {
+        "src": "./images/pets-9.webp",
+        "full": "./images/pets-9-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Black cocker spaniel standing in grass beside a green wooden fence"
+      },
+      {
         "src": "./images/pets-5.webp",
         "full": "./images/pets-5-full.webp",
         "w": 1200,
@@ -586,5 +593,73 @@ export const SECTIONS = {
 };
 
 export const SECTION_ORDER = ["automotive","portraits","automotive-portraits","products","pets"];
+
+export const CAMERA_SHOTS = [
+  {
+    "src": "./images/camera-1.webp",
+    "label": "DSCF6710",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-2.webp",
+    "label": "DSCF6712",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-3.webp",
+    "label": "DSCF6715",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-4.webp",
+    "label": "DSCF6725",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-5.webp",
+    "label": "DSCF6726",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-6.webp",
+    "label": "DSCF6613",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-7.webp",
+    "label": "DSCF6614",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-8.webp",
+    "label": "DSCF6630",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-9.webp",
+    "label": "DSCF6648",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-10.webp",
+    "label": "DSCF6656",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-11.webp",
+    "label": "DSCF6689",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-12.webp",
+    "label": "DSCF6703",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  },
+  {
+    "src": "./images/camera-13.webp",
+    "label": "DSCF6708",
+    "ex": "19.07.2025  ·  KRAKÓW"
+  }
+];
 
 export default SECTIONS;

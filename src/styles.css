@@ -721,6 +721,36 @@ img {
   object-fit: cover;
 }
 
+/* Products + Pets: three explicit columns (balances heights better than CSS
+   multicol, which can leave one short column). */
+.masonry-flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.masonry-flex__col {
+  flex: 1 1 260px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.masonry-flex .masonry__item,
+.masonry-flex .see-all {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .masonry-flex__col {
+    flex: 0 1 calc(50% - 12px);
+  }
+}
+
 /* "See all photos" card that closes each preview grid */
 .see-all {
   break-inside: avoid;
@@ -861,6 +891,140 @@ img {
 .contact__cta:hover {
   background: var(--fg);
   color: var(--bg);
+}
+
+/* ---------- 06 — Camera Experience teaser card ---------- */
+.camera-card-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.camera-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  padding: 48px 24px;
+  color: var(--fg);
+  background: rgba(243, 240, 234, 0.03);
+  border: 1px dashed rgba(243, 240, 234, 0.25);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.camera-card:hover {
+  color: var(--fg);
+  background: rgba(243, 240, 234, 0.06);
+  border-color: rgba(243, 240, 234, 0.4);
+}
+
+.camera-card__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.camera-card__label {
+  font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+}
+
+.camera-card__sub {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  border-top: 1px solid rgba(243, 240, 234, 0.12);
+  padding: 64px 40px 0;
+}
+
+.footer__grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 48px;
+  align-items: start;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer__brand {
+  font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.footer__tag {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.footer__heading {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.footer__link {
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--fg-soft);
+}
+
+.footer__link:hover {
+  color: var(--fg);
+}
+
+.footer__bar {
+  max-width: 1400px;
+  margin: 56px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--hairline);
+  padding: 20px 0 28px;
+}
+
+.footer__copy {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.footer__top {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  min-height: 44px;
+  background: none;
+  border: 1px solid rgba(243, 240, 234, 0.25);
+  color: var(--fg);
+  font-family: 'Archivo', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.footer__top:hover {
+  border-color: var(--accent);
+  background: rgba(243, 240, 234, 0.05);
 }
 
 /* ---------- Nav "current page" label (contact page) ---------- */
@@ -1178,36 +1342,6 @@ img {
 
 /* main.js reveals by setting inline opacity/transform on the element. */
 
-/* ---------- Custom cursor ---------- */
-.cursor-glow,
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate3d(-50%, -50%, 0);
-}
-
-.cursor-glow {
-  width: 70px;
-  height: 70px;
-  background: var(--accent);
-  filter: blur(22px);
-  z-index: 200;
-  transition: opacity 0.25s ease, width 0.3s ease, height 0.3s ease;
-}
-
-.cursor-dot {
-  width: 10px;
-  height: 10px;
-  background: var(--fg);
-  z-index: 201;
-  transition: opacity 0.25s ease, width 0.3s ease, height 0.3s ease,
-    background 0.3s ease;
-}
-
 /* ---------- Lightbox ---------- */
 .lightbox {
   position: fixed;
@@ -1311,10 +1445,7 @@ img {
     height: auto;
   }
   .exif {
-    position: static;
-    margin: 12px 20px 0;
-    width: auto;
-    text-align: left;
+    display: none;
   }
 
   .masonry {
@@ -1331,6 +1462,25 @@ img {
     margin: 2px 20px 0;
   }
 
+  .masonry-flex {
+    flex-direction: column;
+    gap: 2px;
+    margin-left: -20px;
+    margin-right: -20px;
+    width: calc(100% + 40px);
+  }
+  .masonry-flex__col {
+    flex: 1 1 auto;
+    gap: 2px;
+  }
+  .masonry-flex .see-all {
+    margin: 2px 20px 0;
+  }
+
+  .footer {
+    padding: 48px 20px 0;
+  }
+
   .hero__text {
     flex-direction: column;
     align-items: flex-start;
@@ -1344,7 +1494,8 @@ img {
   }
 
   .contact {
-    padding: 120px 20px;
+    padding: 80px 20px;
+    min-height: 0;
   }
 
   .gallery {

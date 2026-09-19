@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Camera Experience — Łukasz Matysiak Photography</title>
+  <meta name="description" content="An interactive 3D Canon EOS 5D Mark IV — scroll or swipe to turn it around, wake the monitor and flip through frames from Kraków. By Łukasz Matysiak (Wujek Baca)." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Camera Experience — Łukasz Matysiak Photography" />
+  <meta property="og:description" content="An interactive 3D camera: turn it around, wake the monitor and flip through the frames." />
+  <meta property="og:url" content="https://lukaszmatysiak.art/camera.html" />
+  <meta property="og:image" content="https://lukaszmatysiak.art/images/hero.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://lukaszmatysiak.art/camera.html" />
+  <meta name="theme-color" content="#050506" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <a class="cam-back" id="camBack" href="index.html#camera-experience">&larr; BACK TO PORTFOLIO</a>
+
+  <main class="cam">
+    <div class="cam__stage">
+      <div class="cam__glow" aria-hidden="true"></div>
+
+      <canvas class="cam__canvas" id="camCanvas" role="img"
+              aria-label="Interactive 3D Canon EOS 5D Mark IV — scroll or swipe sideways to turn it around"></canvas>
+      <canvas id="lcdTex" width="1536" height="1024" hidden></canvas>
+
+      <div class="cam__loading mono" id="camLoading">LOADING MODEL</div>
+      <div class="cam__failed mono" id="camFailed" hidden>
+        THIS PAGE NEEDS WEBGL<br />ENABLE HARDWARE ACCELERATION TO VIEW IT
+      </div>
+
+      <button class="hot" id="hotStart" type="button" tabindex="-1"><span></span><span></span></button>
+      <button class="hot" id="hotPlay" type="button" tabindex="-1"><span></span><span></span></button>
+      <button class="hot" id="hotSet" type="button" tabindex="-1" aria-label="Quick Control Dial / SET — next frame"><span></span><span></span></button>
+
+      <div class="cam__hero" id="camHero">
+        <div class="mono cam__kicker">Łukasz Matysiak</div>
+        <h1 class="cam__title">Photography</h1>
+      </div>
+
+      <div class="cam__hint" id="camHint">
+        <div class="mono cam__hint-text" id="camHintText" aria-live="polite"></div>
+      </div>
+
+      <div class="cam__cue" id="camCue">
+        <button type="button" id="camAdvance" aria-label="Continue">
+          <span class="mono cam__cue-text">SWIPE, SCROLL OR PRESS</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a9ca3" stroke-width="1.5" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+      </div>
+
+      <div class="cam__credit">
+        <div class="mono cam__site">lukaszmatysiak.art</div>
+        <div class="mono attr">Model "Canon EOS 5D Mark IV" by RAW (sketchfab.com/ocbsketch), <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></div>
+      </div>
+    </div>
+
+    <div class="cam__scroll" aria-hidden="true"></div>
+  </main>
+
+  <noscript>
+    <div class="cam-noscript">
+      <p>THIS PAGE NEEDS JAVASCRIPT AND WEBGL.<br /><a href="index.html#camera-experience">&larr; BACK TO PORTFOLIO</a></p>
+    </div>
+  </noscript>
+
+  <script type="module" src="/src/camera.js"></script>
+</body>
+</html>

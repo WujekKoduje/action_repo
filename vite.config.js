@@ -16,6 +16,7 @@ export default defineConfig({
         main: resolve(root, 'index.html'),
         gallery: resolve(root, 'gallery.html'),
         contact: resolve(root, 'contact.html'),
+        camera: resolve(root, 'camera.html'),
       },
     },
   },
