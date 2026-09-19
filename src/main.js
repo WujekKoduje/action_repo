@@ -1,6 +1,5 @@
 import './styles.css';
 import { SECTIONS } from './gallery-data.js';
-import { initCursor } from './cursor.js';
 import { initMenu } from './menu.js';
 import { initLightbox } from './lightbox.js';
 
@@ -220,6 +219,7 @@ const CONTACT_FROM_SECTIONS = [
   'automotive-portraits',
   'products',
   'pets',
+  'camera-experience',
   'contact',
 ];
 
@@ -299,7 +299,6 @@ function boot() {
   initScrollTop();
   initSeeAllCounts();
   initAutomotive();
-  initCursor();
   initMenu();
   initReveal();
   initStats();

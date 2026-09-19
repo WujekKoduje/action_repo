@@ -113,8 +113,35 @@ async function run() {
       ? ok('contact form has name/email/message fields')
       : fail('contact form is missing a required field');
 
+    // ---- camera.html ----
+    console.log('\ncamera.html:');
+    const camera = await (await fetch(`${BASE}/camera.html`)).text();
+    for (const u of assetUrls(camera)) {
+      const s = await head(BASE + u);
+      s === 200 || s === 304 ? ok(`${u} → ${s}`) : fail(`${u} → ${s}`);
+    }
+    // Runtime-fetched model + textures (referenced from JS, so not in the HTML).
+    for (const f of ['camera-mesh.json', 'camera-diffuse.png', 'camera-normal.jpg', 'camera-specgloss.png']) {
+      const s = await head(`${BASE}/camera/${f}`);
+      s === 200 || s === 304 ? ok(`/camera/${f} → ${s}`) : fail(`/camera/${f} → ${s}`);
+    }
+    // The 3D model is CC BY 4.0 — the credit must stay in the page.
+    /RAW \(sketchfab\.com\/ocbsketch\)/.test(camera) && camera.includes('creativecommons.org/licenses/by/4.0')
+      ? ok('camera.html keeps the CC BY 4.0 model credit')
+      : fail('camera.html is missing the CC BY 4.0 model credit');
+    ['camCanvas', 'lcdTex', 'hotStart', 'hotPlay', 'hotSet'].every((id) => camera.includes(`id="${id}"`))
+      ? ok('camera.html has the canvas + hotspot elements the script needs')
+      : fail('camera.html is missing an element camera.js expects');
+
+    // ---- nav: every page links to the Camera Experience ----
+    for (const [name, html] of [['index.html', index], ['gallery.html', await (await fetch(`${BASE}/gallery.html`)).text()], ['contact.html', contact]]) {
+      /<span class="nav__num">06<\/span> CE/.test(html) && /06<\/span> CAMERA EXPERIENCE/.test(html)
+        ? ok(`${name} nav has "06 CE" (bar + drawer)`)
+        : fail(`${name} nav is missing the Camera Experience link`);
+    }
+
     // ---- gallery.html + every section ----
-    const { SECTIONS, SECTION_ORDER } = await import(
+    const { SECTIONS, SECTION_ORDER, CAMERA_SHOTS } = await import(
       pathToFileURL(resolve(ROOT, 'src/gallery-data.js')).href + `?t=${Date.now()}`
     );
     console.log('\ngallery.html:');
@@ -138,9 +165,19 @@ async function run() {
     }
     ok(`${imgCount} gallery images all resolve`);
 
+    let shotCount = 0;
+    for (const shot of CAMERA_SHOTS) {
+      shotCount++;
+      const s = await head(BASE + shot.src.replace(/^\.\//, '/'));
+      if (s !== 200 && s !== 304) fail(`camera shot ${shot.src} → ${s}`);
+    }
+    CAMERA_SHOTS.length === 13
+      ? ok(`${shotCount} camera LCD frames all resolve`)
+      : fail(`expected 13 camera LCD frames, got ${CAMERA_SHOTS.length}`);
+
     // ---- invariants ----
     console.log('\ninvariants:');
-    const expected = { automotive: 14, portraits: 17, 'automotive-portraits': 15, products: 15, pets: 8 };
+    const expected = { automotive: 14, portraits: 17, 'automotive-portraits': 15, products: 15, pets: 9 };
     for (const [k, n] of Object.entries(expected)) {
       SECTIONS[k]?.items.length === n
         ? ok(`${k}: ${n} photos`)

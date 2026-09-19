@@ -118,6 +118,8 @@ export const SECTIONS = {
       { file: '20240928-DSCF6310-Enhanced-NR.JPG', slug: 'pets-2', alt: 'Cream cat looking up from white shelf, overhead view' },
       { file: '20240928-DSCF6325-Enhanced-NR.JPG', slug: 'pets-3', alt: 'Cream cat with grumpy expression on shelf' },
       { file: '20260716-DSCF7332.jpg', slug: 'pets-4', alt: 'Black cocker spaniel looking up at golden hour, tongue out' },
+      // Slug is out of sequence on purpose: keeps every existing pets-N.webp filename stable.
+      { file: '20260716-DSCF7549.jpg', slug: 'pets-9', alt: 'Black cocker spaniel standing in grass beside a green wooden fence' },
       { file: '20260716-DSCF7562.JPG', slug: 'pets-5', alt: 'Black cocker spaniel meeting another dog through a fence' },
       { file: '20260716-DSCF7655.JPG', slug: 'pets-6', alt: 'Black cocker spaniel close-up portrait in a field, tongue out' },
       { file: '20260815-DSCF7615.JPG', slug: 'pets-7', alt: 'Cream cat resting head on paws, low angle indoors' },
@@ -128,6 +130,22 @@ export const SECTIONS = {
 
 /** Ordered section keys (also the nav order). */
 export const SECTION_ORDER = ['automotive', 'portraits', 'automotive-portraits', 'products', 'pets'];
+
+/**
+ * Frames shown on the Camera Experience page's rear LCD (playback mode), in
+ * playback order. The LCD is a 3:2 canvas, so each is cover-cropped to exactly
+ * 1536×1024 (one source, DSCF6703, is 2:1 and would otherwise be stretched).
+ *   label – the filename-style tag printed on the LCD overlay
+ *   ex    – the second overlay line
+ */
+export const CAMERA_SHOTS = ['6710', '6712', '6715', '6725', '6726', '6613', '6614', '6630', '6648', '6656', '6689', '6703', '6708'].map(
+  (n, i) => ({
+    file: `20250719-DSCF${n}.JPG`,
+    slug: `camera-${i + 1}`,
+    label: `DSCF${n}`,
+    ex: '19.07.2025  ·  KRAKÓW',
+  })
+);
 
 /**
  * The hero image (`uploads/20251209-DSCF9901-b064a99d.jpeg`) is handled

@@ -1,6 +1,5 @@
 import './styles.css';
 import { SECTIONS, SECTION_ORDER } from './gallery-data.js';
-import { initCursor } from './cursor.js';
 import { initMenu } from './menu.js';
 import { initLightbox } from './lightbox.js';
 
@@ -83,7 +82,6 @@ $$('a[href*="gallery.html?section="]').forEach((a) => {
 
 window.addEventListener('popstate', () => go(sectionFromUrl(), { push: false }));
 
-initCursor();
 initMenu();
 initLightbox({ getGroup: () => $$('#galleryGrid img') });
 

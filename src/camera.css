@@ -1,0 +1,352 @@
+/* ============================================================
+   Camera Experience — standalone art direction (own fonts, own palette).
+   Deliberately does NOT load the shared styles.css.
+   ============================================================ */
+
+:root {
+  --cam-accent: #d9a25c;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: #050506;
+}
+
+a {
+  color: var(--cam-accent);
+}
+
+a:hover {
+  color: #eab878;
+}
+
+.mono {
+  font-family: 'Space Mono', monospace;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(0.5); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.cam {
+  position: relative;
+  width: 100%;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+/* The stage is fixed; the tall spacer below provides the scroll range that
+   drives the rotation. */
+.cam__stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse 72% 58% at 50% 44%, #15161b 0%, #0a0b0d 55%, #030304 100%);
+}
+
+.cam__scroll {
+  height: 400vh;
+}
+
+.cam__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 900px;
+  height: 660px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(ellipse, #d9a25c1c 0%, #d9a25c09 44%, transparent 72%);
+}
+
+.cam__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.cam__canvas:active {
+  cursor: grabbing;
+}
+
+.cam__loading,
+.cam__failed {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.cam__loading {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: #6e7178;
+}
+
+.cam__failed {
+  max-width: 380px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: #9a9ca3;
+  line-height: 1.7;
+}
+
+/* ---------- Hotspots (rings over the camera's real controls) ---------- */
+.hot {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  position: absolute;
+  cursor: pointer;
+  color: var(--cam-accent);
+  border-radius: 50%;
+  width: 68px;
+  height: 68px;
+  margin: -34px 0 0 -34px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.hot:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.hot span {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+}
+
+.hot span + span {
+  opacity: 0;
+  animation: ringPulse 1.9s ease-out infinite;
+}
+
+/* ---------- Text overlays ---------- */
+.cam__hero {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  width: min(90%, 580px);
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.25s linear;
+}
+
+.cam__kicker {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cam-accent);
+  margin-bottom: 12px;
+}
+
+.cam__title {
+  margin: 0;
+  font-size: 46px;
+  font-weight: 500;
+  color: #f4f2ee;
+  letter-spacing: -0.015em;
+}
+
+.cam__hint {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.cam__hint-text {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cam-accent);
+  white-space: nowrap;
+}
+
+.cam__cue {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.cam__cue button {
+  appearance: none;
+  border: 0;
+  background: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 22px;
+  min-height: 44px;
+}
+
+.cam__cue-text {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: #7c7f87;
+}
+
+.cam__cue svg {
+  animation: breathe 2.2s ease-in-out infinite;
+}
+
+.cam__credit {
+  position: absolute;
+  left: 24px;
+  bottom: 20px;
+  text-align: left;
+}
+
+.cam__site {
+  font-size: 12px;
+  color: #9a9ca3;
+  letter-spacing: 0.1em;
+}
+
+/* CC BY 4.0 credit for the 3D model — required, so it stays in the DOM and
+   comes up to full contrast on hover / keyboard focus. Quiet, never hidden. */
+.attr {
+  font-size: 9px;
+  letter-spacing: 0.03em;
+  margin-top: 5px;
+  color: #2f3137;
+  transition: color 0.3s ease;
+}
+
+.attr a {
+  color: #34373d;
+  transition: color 0.3s ease;
+}
+
+.cam__credit:hover .attr,
+.attr:focus-within {
+  color: #8b8f98;
+}
+
+.cam__credit:hover .attr a,
+.attr a:focus {
+  color: var(--cam-accent);
+}
+
+.cam-back {
+  position: fixed;
+  top: 22px;
+  left: 24px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: #d8d3c8;
+  text-decoration: none;
+  background: rgba(5, 5, 6, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cam-back:hover {
+  color: #f4f2ee;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cam-noscript {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: #050506;
+  color: #9a9ca3;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+}
+
+@media (max-width: 680px) {
+  .cam__hero {
+    top: 78px;
+    width: 92%;
+  }
+  .cam__title {
+    font-size: 29px;
+  }
+  .cam__hint {
+    bottom: 124px;
+  }
+  .cam__cue {
+    bottom: 62px;
+  }
+  .cam__credit {
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .hot {
+    width: 104px !important;
+    height: 104px !important;
+    margin: -52px 0 0 -52px !important;
+  }
+  .hot span {
+    inset: 18px;
+    border-width: 2.5px;
+  }
+  .cam-back {
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 9px 14px;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cam__cue svg,
+  .hot span + span {
+    animation: none;
+  }
+}
