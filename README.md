@@ -56,7 +56,7 @@ npm test           # build + scripts/smoke.mjs — HEAD-checks every asset /
 ## Images
 
 The ~500 MB of originals from the design handoff are **not** committed.
-`public/images/` holds the optimized derivatives the site loads (~19 MB, ~70
+`public/images/` holds the optimized derivatives the site loads (~24 MB, ~87
 photos × 2 sizes + logos + camera frames) and `src/gallery-data.js` is generated
 alongside them.
 
