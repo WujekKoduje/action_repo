@@ -30,25 +30,25 @@ function initIntro() {
     return;
   }
 
-  document.body.style.overflow = 'hidden';
+  // The page is deliberately NOT scroll-locked while the intro shows. Locking
+  // `body { overflow: hidden }` and releasing it inside the first touch made
+  // that first swipe do nothing (it only dismissed the intro) and left phones
+  // needing a second tap afterwards. The intro is a fixed overlay, so the
+  // first gesture can simply scroll the page underneath while it fades out.
   let dismissed = false;
 
-  const dismiss = () => {
+  const events = ['wheel', 'touchstart', 'keydown', 'click', 'scroll'];
+  const dismiss = (e) => {
     if (dismissed) return;
+    // Ignore scroll events that don't actually move the page.
+    if (e && e.type === 'scroll' && window.scrollY < 2) return;
     dismissed = true;
+    events.forEach((t) => window.removeEventListener(t, dismiss));
     intro.classList.add('intro--hidden');
-    document.body.style.overflow = '';
     window.setTimeout(() => intro.remove(), 650);
-    window.removeEventListener('wheel', dismiss);
-    window.removeEventListener('touchstart', dismiss);
-    window.removeEventListener('keydown', dismiss);
-    window.removeEventListener('click', dismiss);
   };
 
-  window.addEventListener('wheel', dismiss, { passive: true });
-  window.addEventListener('touchstart', dismiss, { passive: true });
-  window.addEventListener('keydown', dismiss);
-  window.addEventListener('click', dismiss);
+  events.forEach((t) => window.addEventListener(t, dismiss, { passive: true }));
 }
 
 /* ---------- Hash scroll on load (nav-height aware) ---------- */
@@ -224,10 +224,34 @@ const CONTACT_FROM_SECTIONS = [
   'contact',
 ];
 
+// The section currently under the top 40% of the viewport (or null above the first).
+function activeSection() {
+  const vh = window.innerHeight;
+  let active = null;
+  CONTACT_FROM_SECTIONS.forEach((id) => {
+    const sec = document.getElementById(id);
+    if (sec && sec.getBoundingClientRect().top <= vh * 0.4) active = id;
+  });
+  return active;
+}
+
+// CONTACT links carry "?from=<section>" so the form's back link returns the
+// visitor to where they were. Resolved when the link is approached or used,
+// not on every scroll frame, so nothing mutates these links while scrolling.
+function initContactLinks() {
+  $$('#navContact, #menuContact').forEach((a) => {
+    const stamp = () => {
+      a.href = `contact.html?from=${activeSection() || 'automotive'}`;
+    };
+    ['pointerenter', 'pointerdown', 'focus', 'contextmenu', 'click'].forEach((ev) =>
+      a.addEventListener(ev, stamp)
+    );
+  });
+}
+
 function initScrollFx() {
   const nav = $('#nav');
   const navLinks = $$('#navLinks .nav__link');
-  const contactLinks = $$('#navContact, #menuContact');
   const parallaxEls = $$('[data-parallax]');
   const kineticEls = $$('[data-kinetic]');
 
@@ -245,18 +269,11 @@ function initScrollFx() {
 
     if (nav) nav.classList.toggle('nav--scrolled', window.scrollY > 60);
 
-    if (navLinks.length || contactLinks.length) {
-      let active = null;
-      CONTACT_FROM_SECTIONS.forEach((id) => {
-        const sec = document.getElementById(id);
-        if (sec && sec.getBoundingClientRect().top <= vh * 0.4) active = id;
-      });
+    if (navLinks.length) {
+      const active = activeSection();
       navLinks.forEach((a) =>
         a.classList.toggle('nav__link--active', a.dataset.target === active)
       );
-      contactLinks.forEach((a) => {
-        a.href = `contact.html?from=${active || 'automotive'}`;
-      });
     }
 
     if (!prefersReducedMotion) {
@@ -303,6 +320,7 @@ function boot() {
   initMenu();
   initReveal();
   initStats();
+  initContactLinks();
   initScrollFx();
   initLightbox({
     getGroup: (img) => $$('img', img.closest('[data-lightbox]') || document),
