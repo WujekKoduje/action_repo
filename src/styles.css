@@ -46,8 +46,19 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: var(--fg);
+/* A tap is just a tap: no double-tap-zoom disambiguation on touch devices. */
+a,
+button,
+input,
+textarea,
+label {
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  a:hover {
+    color: var(--fg);
+  }
 }
 
 ::selection {
@@ -267,8 +278,10 @@ img {
   white-space: nowrap;
 }
 
-.nav__link:hover {
-  color: var(--fg);
+@media (hover: hover) {
+  .nav__link:hover {
+    color: var(--fg);
+  }
 }
 
 .nav__link--active {
@@ -765,10 +778,12 @@ img {
   transition: background 0.25s ease, border-color 0.25s ease;
 }
 
-.see-all:hover {
-  color: var(--fg);
-  background: rgba(243, 240, 234, 0.06);
-  border-color: rgba(243, 240, 234, 0.4);
+@media (hover: hover) {
+  .see-all:hover {
+    color: var(--fg);
+    background: rgba(243, 240, 234, 0.06);
+    border-color: rgba(243, 240, 234, 0.4);
+  }
 }
 
 .see-all__inner {
@@ -807,11 +822,16 @@ img {
   transition: opacity 0.4s ease;
 }
 
-.masonry__item:hover .cap,
 .masonry__item:focus-within .cap,
-.g-item:hover .cap,
 .g-item:focus-within .cap {
   opacity: 1;
+}
+
+@media (hover: hover) {
+  .masonry__item:hover .cap,
+  .g-item:hover .cap {
+    opacity: 1;
+  }
 }
 
 /* Gentle zoom on hover for gallery imagery.
@@ -825,15 +845,19 @@ img {
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
 }
 
-.auto-shot:hover img,
-.masonry__item:hover img,
-.g-item:hover img {
-  transform: scale(1.035);
+@media (hover: hover) {
+  .auto-shot:hover img,
+  .masonry__item:hover img,
+  .g-item:hover img {
+    transform: scale(1.035);
+  }
 }
 
-.masonry__item:hover img,
-.g-item:hover img {
-  filter: brightness(1.05);
+@media (hover: hover) {
+  .masonry__item:hover img,
+  .g-item:hover img {
+    filter: brightness(1.05);
+  }
 }
 
 /* ---------- Contact ---------- */
@@ -888,9 +912,11 @@ img {
   transition: background 0.25s ease;
 }
 
-.contact__cta:hover {
-  background: var(--fg);
-  color: var(--bg);
+@media (hover: hover) {
+  .contact__cta:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
 }
 
 /* ---------- 06 — Camera Experience teaser card ---------- */
@@ -911,10 +937,12 @@ img {
   transition: background 0.25s ease, border-color 0.25s ease;
 }
 
-.camera-card:hover {
-  color: var(--fg);
-  background: rgba(243, 240, 234, 0.06);
-  border-color: rgba(243, 240, 234, 0.4);
+@media (hover: hover) {
+  .camera-card:hover {
+    color: var(--fg);
+    background: rgba(243, 240, 234, 0.06);
+    border-color: rgba(243, 240, 234, 0.4);
+  }
 }
 
 .camera-card__inner {
@@ -984,8 +1012,10 @@ img {
   color: var(--fg-soft);
 }
 
-.footer__link:hover {
-  color: var(--fg);
+@media (hover: hover) {
+  .footer__link:hover {
+    color: var(--fg);
+  }
 }
 
 .footer__bar {
@@ -1022,9 +1052,11 @@ img {
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
-.footer__top:hover {
-  border-color: var(--accent);
-  background: rgba(243, 240, 234, 0.05);
+@media (hover: hover) {
+  .footer__top:hover {
+    border-color: var(--accent);
+    background: rgba(243, 240, 234, 0.05);
+  }
 }
 
 /* ---------- Nav "current page" label (contact page) ---------- */
@@ -1178,8 +1210,10 @@ img {
   transition: background 0.25s ease;
 }
 
-.form__submit:hover:not(:disabled) {
-  background: var(--accent);
+@media (hover: hover) {
+  .form__submit:hover:not(:disabled) {
+    background: var(--accent);
+  }
 }
 
 .form__submit:disabled {
@@ -1234,9 +1268,11 @@ img {
   color: var(--muted);
 }
 
-.gallery__back:hover,
-.gallery__back--btn:hover {
-  color: var(--fg);
+@media (hover: hover) {
+  .gallery__back:hover,
+  .gallery__back--btn:hover {
+    color: var(--fg);
+  }
 }
 
 .gallery__back {
@@ -1312,9 +1348,11 @@ img {
   transition: background 0.25s ease, border-color 0.25s ease;
 }
 
-.gallery__back--btn:hover {
-  background: rgba(243, 240, 234, 0.06);
-  border-color: rgba(243, 240, 234, 0.4);
+@media (hover: hover) {
+  .gallery__back--btn:hover {
+    background: rgba(243, 240, 234, 0.06);
+    border-color: rgba(243, 240, 234, 0.4);
+  }
 }
 
 /* ---------- Reveal-on-scroll ---------- */
