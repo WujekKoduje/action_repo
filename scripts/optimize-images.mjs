@@ -29,7 +29,7 @@ const DATA_ONLY = process.argv.includes('--data-only');
 const SRC_DIR =
   process.argv.find((a) => !a.startsWith('-') && a !== process.argv[0] && a !== process.argv[1]) ||
   process.env.WB_UPLOADS ||
-  'C:/Users/LukaszMatysiak/Downloads/Wujek Baca portfolio website-handoff (4)/wujek-baca-portfolio-website/project/uploads';
+  'C:/Users/LukaszMatysiak/Downloads/Wujek Baca portfolio website-handoff (5)/wujek-baca-portfolio-website/project/uploads';
 
 // The camera LCD is a fixed 3:2 canvas.
 const LCD = { w: 1536, h: 1024, q: 80 };

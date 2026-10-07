@@ -102,8 +102,9 @@ function initAutomotive() {
   const grid = $('#autoGrid');
   if (!heroImg || !grid) return;
 
-  // The prototype's random pool is every automotive shot except index 4.
-  const pool = SECTIONS.automotive.items.filter((_, i) => i !== 4);
+  // The design's random pool is its original 13 shots: the first 14 gallery
+  // items minus index 4. Later additions only appear in the grid and gallery.
+  const pool = SECTIONS.automotive.items.slice(0, 14).filter((_, i) => i !== 4);
   if (pool.length < 5) return;
 
   const heroIdx = Math.floor(Math.random() * pool.length);

@@ -143,6 +143,96 @@ export const SECTIONS = {
         "chip": "LEICA Q2 · SUMMILUX 28mm F1.7 · 28mm · f/1.7 · 1/1000s · ISO 100",
         "camera": "LEICA Q2 · SUMMILUX 28mm F1.7",
         "settings": "28mm · f/1.7 · 1/1000s · ISO 100"
+      },
+      {
+        "src": "./images/automotive-15.webp",
+        "full": "./images/automotive-15-full.webp",
+        "w": 1800,
+        "h": 2700,
+        "alt": "Copper Cupra badge on a dark bonnet, underground car park",
+        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 24mm · f/2 · 1/200s · ISO 5000",
+        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
+        "settings": "24mm · f/2 · 1/200s · ISO 5000"
+      },
+      {
+        "src": "./images/automotive-16.webp",
+        "full": "./images/automotive-16-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Cupra rear light bar and badge at dusk",
+        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 40mm · f/2 · 1/200s · ISO 5000",
+        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
+        "settings": "40mm · f/2 · 1/200s · ISO 5000"
+      },
+      {
+        "src": "./images/automotive-17.webp",
+        "full": "./images/automotive-17-full.webp",
+        "w": 1800,
+        "h": 2700,
+        "alt": "Cupra rear light bar glowing in a car park",
+        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 40mm · f/2 · 1/200s · ISO 5000",
+        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
+        "settings": "40mm · f/2 · 1/200s · ISO 5000"
+      },
+      {
+        "src": "./images/automotive-18.webp",
+        "full": "./images/automotive-18-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Cupra rear light bar under car park strip lights",
+        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 40mm · f/2 · 1/200s · ISO 6400",
+        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
+        "settings": "40mm · f/2 · 1/200s · ISO 6400"
+      },
+      {
+        "src": "./images/automotive-19.webp",
+        "full": "./images/automotive-19-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Cupra Formentor rear three-quarter in an industrial hall",
+        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 17mm · f/2 · 1/200s · ISO 4000",
+        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
+        "settings": "17mm · f/2 · 1/200s · ISO 4000"
+      },
+      {
+        "src": "./images/automotive-20.webp",
+        "full": "./images/automotive-20-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Low front view of a Cupra Formentor in a warehouse",
+        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 40mm · f/2 · 1/200s · ISO 3200",
+        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
+        "settings": "40mm · f/2 · 1/200s · ISO 3200"
+      },
+      {
+        "src": "./images/automotive-21.webp",
+        "full": "./images/automotive-21-full.webp",
+        "w": 1800,
+        "h": 2700,
+        "alt": "Yellow Porsche Cayman GT4 in an underpass, framed by a blurred headlight",
+        "chip": "Canon EOS-1D X · EF70-200mm f/2.8L IS III · 70mm · f/2.8 · 1/1250s · ISO 200",
+        "camera": "Canon EOS-1D X · EF70-200mm f/2.8L IS III",
+        "settings": "70mm · f/2.8 · 1/1250s · ISO 200"
+      },
+      {
+        "src": "./images/automotive-22.webp",
+        "full": "./images/automotive-22-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Yellow Porsche Cayman GT4 from behind on a sunlit road",
+        "chip": "Canon EOS-1D X · EF70-200mm f/2.8L IS III · 70mm · f/2.8 · 1/640s · ISO 320",
+        "camera": "Canon EOS-1D X · EF70-200mm f/2.8L IS III",
+        "settings": "70mm · f/2.8 · 1/640s · ISO 320"
+      },
+      {
+        "src": "./images/automotive-23.webp",
+        "full": "./images/automotive-23-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Yellow Cayman GT4 and black Porsche Cayman under a bridge",
+        "chip": "Canon EOS-1D X · EF70-200mm f/2.8L IS III · 70mm · f/2.8 · 1/1000s · ISO 200",
+        "camera": "Canon EOS-1D X · EF70-200mm f/2.8L IS III",
+        "settings": "70mm · f/2.8 · 1/1000s · ISO 200"
       }
     ]
   },
@@ -409,6 +499,78 @@ export const SECTIONS = {
         "h": 1800,
         "alt": "Woman leaning on green BMW M3 hood, neon garage ceiling",
         "caption": "Leaning on the hood, honeycomb light."
+      },
+      {
+        "src": "./images/cars-16.webp",
+        "full": "./images/cars-16-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Five models posing around a magenta Porsche 911 in a concrete studio",
+        "caption": "Five against the magenta 911."
+      },
+      {
+        "src": "./images/cars-17.webp",
+        "full": "./images/cars-17-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Group of models inside a G-Class with yellow interior",
+        "caption": "A full cabin in the G-Class."
+      },
+      {
+        "src": "./images/cars-18.webp",
+        "full": "./images/cars-18-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Model in a light blue lace dress between a magenta 911 and a G-Class",
+        "caption": "Pale blue between pink and silver."
+      },
+      {
+        "src": "./images/cars-19.webp",
+        "full": "./images/cars-19-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Model leaning on the bonnet of a magenta Porsche 911, shot from above",
+        "caption": "From above, on the 911 bonnet."
+      },
+      {
+        "src": "./images/cars-20.webp",
+        "full": "./images/cars-20-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Two models leaning on a magenta Porsche 911",
+        "caption": "Two at the window line."
+      },
+      {
+        "src": "./images/cars-21.webp",
+        "full": "./images/cars-21-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Model in a leather jacket in the driver seat of a magenta 911",
+        "caption": "Leather jacket, driver seat."
+      },
+      {
+        "src": "./images/cars-22.webp",
+        "full": "./images/cars-22-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Model in black sitting on a magenta Porsche 911 against a pink-lit wall",
+        "caption": "Perched on the arch, pink wall behind."
+      },
+      {
+        "src": "./images/cars-23.webp",
+        "full": "./images/cars-23-full.webp",
+        "w": 1200,
+        "h": 1801,
+        "alt": "Model leaning on the front of a silver G-Class, shot from above",
+        "caption": "Arms out across the G-Class grille."
+      },
+      {
+        "src": "./images/cars-24.webp",
+        "full": "./images/cars-24-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Tattooed model posing in front of a silver G-Class",
+        "caption": "Ink and chrome."
       }
     ]
   },
