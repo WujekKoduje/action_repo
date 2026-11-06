@@ -325,6 +325,12 @@ function boot() {
   initLightbox({
     getGroup: (img) => $$('img', img.closest('[data-lightbox]') || document),
   });
+
+  // Opt-in on-screen tap logger for debugging touch problems on a real phone.
+  // Loaded on demand, so it costs nothing unless the URL has ?debug=taps.
+  if (new URLSearchParams(location.search).get('debug') === 'taps') {
+    import('./tap-debug.js').then((m) => m.startTapDebug());
+  }
 }
 
 if (document.readyState === 'loading') {
