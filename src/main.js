@@ -8,6 +8,10 @@ import { initLightbox } from './lightbox.js';
    Ported from the Claude Design prototype (support.js / DCLogic).
    ============================================================ */
 
+// Captured the moment the script first runs, for the ?debug logger: a page the
+// browser preloaded in the background starts out 'hidden'.
+const BOOT_VISIBILITY = document.visibilityState;
+
 const PARALLAX_INTENSITY = 0.4;
 const prefersReducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)'
@@ -37,26 +41,18 @@ function initIntro() {
   // first gesture can simply scroll the page underneath while it fades out.
   let dismissed = false;
 
-  // `touchstart` is deliberately never removed (it is a no-op after the first
-  // call). On a phone, a fresh load needed a second tap on any link, while
-  // loads that skip the intro (no touch listener at all) or run with the
-  // ?debug=taps logger (touch listeners that stay registered) were fine — the
-  // only bad case was removing the page's last touch listener from inside the
-  // touch it was handling.
-  const removable = ['wheel', 'keydown', 'click', 'scroll'];
+  const events = ['wheel', 'touchstart', 'keydown', 'click', 'scroll'];
   const dismiss = (e) => {
     if (dismissed) return;
     // Ignore scroll events that don't actually move the page.
     if (e && e.type === 'scroll' && window.scrollY < 2) return;
     dismissed = true;
-    removable.forEach((t) => window.removeEventListener(t, dismiss));
+    events.forEach((t) => window.removeEventListener(t, dismiss));
     intro.classList.add('intro--hidden');
     window.setTimeout(() => intro.remove(), 650);
   };
 
-  [...removable, 'touchstart'].forEach((t) =>
-    window.addEventListener(t, dismiss, { passive: true })
-  );
+  events.forEach((t) => window.addEventListener(t, dismiss, { passive: true }));
 }
 
 /* ---------- Hash scroll on load (nav-height aware) ---------- */
@@ -337,9 +333,23 @@ function boot() {
   // Opt-in on-screen tap logger for debugging touch problems on a real phone.
   // Loaded on demand, so it costs nothing unless the URL has ?debug=taps
   // (or =listen / =panel, the single-factor variants — see tap-debug.js).
-  const debugMode = new URLSearchParams(location.search).get('debug');
+  // `&keep=1` makes it sticky (localStorage) so it can run on the plain URL;
+  // `?debug=off` clears that.
+  const params = new URLSearchParams(location.search);
+  let debugMode = params.get('debug');
+  let sticky = false;
+  try {
+    if (debugMode === 'off') localStorage.removeItem('wb-debug');
+    else if (debugMode && params.has('keep')) localStorage.setItem('wb-debug', debugMode);
+    else if (!debugMode) {
+      debugMode = localStorage.getItem('wb-debug');
+      sticky = !!debugMode;
+    }
+  } catch {
+    /* storage unavailable (private mode) — only the URL form works */
+  }
   if (['taps', 'listen', 'panel'].includes(debugMode)) {
-    import('./tap-debug.js').then((m) => m.startTapDebug(debugMode));
+    import('./tap-debug.js').then((m) => m.startTapDebug(debugMode, sticky, BOOT_VISIBILITY));
   }
 }
 

@@ -7,12 +7,23 @@
    the page was still scrolling, and the viewport state. A tap that produces no
    click is flagged with "!!". Loaded on demand only — see main.js.
 
-   Modes (for bisecting a bug that only shows WITHOUT the full logger):
+   Why "sticky": the bug it hunts disappears whenever the URL has ANY query
+   string (?x=1 is enough), so the logger can't be turned on with a parameter
+   and still watch the failing load. Visit  /?debug=taps&keep=1  once — it
+   remembers itself in localStorage — then open the plain URL as usual and the
+   log appears on that load. Turn it off with  /?debug=off.
+
+   Besides touches it records how the page was opened (cache vs network,
+   visibility, timing, resizes), since that is what differs between the plain
+   URL and one with a query string.
+
+   Modes (for bisecting):
      ?debug=taps    everything below
      ?debug=listen  the same listeners, all doing nothing; no overlay
      ?debug=panel   just the overlay, no listeners */
 
-const MAX_LINES = 18;
+const MAX_LINES = 11;
+const LIFE_LINES = 6;
 const TAP_MAX_MS = 500;
 const TAP_MAX_MOVE = 12;
 const CLICK_WAIT_MS = 600;
@@ -37,7 +48,7 @@ function makePanel() {
   return panel;
 }
 
-export function startTapDebug(mode = 'taps') {
+export function startTapDebug(mode = 'taps', sticky = false, bootVisibility = '?') {
   if (mode === 'panel') {
     makePanel().textContent = 'debug=panel: overlay only, no listeners';
     return;
@@ -48,17 +59,25 @@ export function startTapDebug(mode = 'taps') {
     return;
   }
 
-  const t0 = performance.now();
+  // Three pinned sections so the page-load facts and lifecycle events can't
+  // scroll away behind a stream of touch lines before you screenshot.
+  const head = [];
+  const life = [];
   const lines = [];
   const panel = makePanel();
 
-  const log = (msg) => {
-    const line = `${((performance.now() - t0) / 1000).toFixed(1)}s ${msg}`;
-    lines.push(line);
-    if (lines.length > MAX_LINES) lines.shift();
-    panel.textContent = lines.join('\n');
+  const log = (msg, bucket = lines, max = MAX_LINES) => {
+    // Seconds since navigation start, so a long wait before the page became
+    // visible shows up in the timestamps.
+    const line = `${(performance.now() / 1000).toFixed(1)}s ${msg}`;
+    bucket.push(line);
+    if (bucket.length > max) bucket.shift();
+    panel.textContent = [...head, '-- page lifecycle --', ...life, '-- touches --', ...lines].join('\n');
     console.log('[tap-debug]', line);
   };
+  const logHead = (msg) => log(msg, head, 99);
+  const logLife = (msg) => log(msg, life, LIFE_LINES);
+  const state = () => `vis=${document.visibilityState} focus=${document.hasFocus()}`;
 
   const vv = () => {
     const v = window.visualViewport;
@@ -72,8 +91,15 @@ export function startTapDebug(mode = 'taps') {
   let lastClickAt = -1e9;
   let touch = null;
 
-  log(`ready  ${navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 58)}`);
-  log(`intro=${introUp()} ${vv()} scrollY=${Math.round(scrollY)} dpr=${devicePixelRatio}`);
+  logHead(`ready  ${navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 58)}${sticky ? '  [sticky: /?debug=off to stop]' : ''}`);
+  const nav = performance.getEntriesByType('navigation')[0];
+  const sec = (ms) => (ms ? `${(ms / 1000).toFixed(1)}s` : '-');
+  logHead(
+    `nav type=${nav ? nav.type : '?'} transfer=${nav ? nav.transferSize : '?'}B redirects=${nav ? nav.redirectCount : '?'} ` +
+      `dcl=${nav ? sec(nav.domContentLoadedEventEnd) : '?'} load=${nav ? sec(nav.loadEventEnd) : '?'} ` +
+      `${state()} bootVis=${bootVisibility} prerender=${document.prerendering === true}`
+  );
+  logHead(`intro=${introUp()} ${vv()} scrollY=${Math.round(scrollY)} dpr=${devicePixelRatio.toFixed(1)} ${innerWidth}x${innerHeight}`);
 
   const opts = { capture: true, passive: true };
 
@@ -96,7 +122,7 @@ export function startTapDebug(mode = 'taps') {
     const ok = hit === e.target || (e.target.contains && e.target.contains(hit)) || (hit && hit.contains && hit.contains(e.target));
     touch = { at: performance.now(), x: p.clientX, y: p.clientY, moved: 0, target: e.target };
     const sinceScroll = Math.round(performance.now() - lastScrollAt);
-    log(`T-down ${describe(e.target)}  under=${describe(hit)}${ok ? '' : '  !!MISMATCH'}  sinceScroll=${sinceScroll > 99999 ? '-' : sinceScroll + 'ms'} intro=${introUp()} ${vv()}`);
+    log(`T-down ${describe(e.target)}  under=${describe(hit)}${ok ? '' : '  !!MISMATCH'}  sinceScroll=${sinceScroll > 99999 ? '-' : sinceScroll + 'ms'} intro=${introUp()} ${state()} ${vv()}`);
   }, opts);
 
   addEventListener('touchmove', (e) => {
@@ -133,5 +159,15 @@ export function startTapDebug(mode = 'taps') {
     log(`CLICK  ${describe(e.target)}  prevented=${e.defaultPrevented}`);
   }, opts);
 
-  addEventListener('pagehide', () => log('pagehide (navigating away)'), opts);
+  addEventListener('pagehide', () => logLife('pagehide (navigating away)'), opts);
+  addEventListener('pageshow', (e) => logLife(`pageshow persisted=${e.persisted}`), opts);
+  document.addEventListener('visibilitychange', () => logLife(`visibility -> ${document.visibilityState}`));
+  addEventListener('focus', () => logLife('window focus'), opts);
+  addEventListener('blur', () => logLife('window blur'), opts);
+  if (document.readyState !== 'complete') addEventListener('load', () => logLife('load event'));
+  let resizeTimer = 0;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => logLife(`resize ${innerWidth}x${innerHeight} ${vv()}`), 150);
+  }, opts);
 }
