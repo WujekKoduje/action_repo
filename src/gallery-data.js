@@ -213,6 +213,60 @@ export const SECTIONS = {
         "chip": "Canon EOS-1D X · EF70-200mm f/2.8L IS III · 70mm · f/2.8 · 1/1000s · ISO 200",
         "camera": "Canon EOS-1D X · EF70-200mm f/2.8L IS III",
         "settings": "70mm · f/2.8 · 1/1000s · ISO 200"
+      },
+      {
+        "src": "./images/automotive-24.webp",
+        "full": "./images/automotive-24-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Yellow Renault Mégane RS from behind beside a modern office building",
+        "chip": "Canon EOS-1D X · EF70-200mm f/2.8L IS III · 123mm · f/2.8 · 1/500s · ISO 200",
+        "camera": "Canon EOS-1D X · EF70-200mm f/2.8L IS III",
+        "settings": "123mm · f/2.8 · 1/500s · ISO 200"
+      },
+      {
+        "src": "./images/automotive-25.webp",
+        "full": "./images/automotive-25-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Yellow Renault Mégane RS on a ramp lined with autumn ivy",
+        "chip": "Canon EOS-1D X · EF16-35mm f/4L IS · 35mm · f/4 · 1/400s · ISO 200",
+        "camera": "Canon EOS-1D X · EF16-35mm f/4L IS",
+        "settings": "35mm · f/4 · 1/400s · ISO 200"
+      },
+      {
+        "src": "./images/automotive-26.webp",
+        "full": "./images/automotive-26-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Red Audi hatchback in an industrial yard with machinery behind",
+        "chip": "FUJIFILM X-T3 · XF16-55mm F2.8 · 16mm · f/11 · 1/240s · ISO 640",
+        "camera": "FUJIFILM X-T3 · XF16-55mm F2.8",
+        "settings": "16mm · f/11 · 1/240s · ISO 640"
+      },
+      {
+        "src": "./images/automotive-27.webp",
+        "full": "./images/automotive-27-full.webp",
+        "w": 1800,
+        "h": 1200,
+        "alt": "Low black coupe parked in an industrial yard under a crane",
+        "chip": "FUJIFILM X-T3 · XF16-55mm F2.8 · 16mm · f/2.8 · 1/3800s · ISO 640",
+        "camera": "FUJIFILM X-T3 · XF16-55mm F2.8",
+        "settings": "16mm · f/2.8 · 1/3800s · ISO 640"
+      },
+      {
+        "src": "./images/automotive-28.webp",
+        "full": "./images/automotive-28-full.webp",
+        "w": 1800,
+        "h": 1800,
+        "alt": "Yellow Ferrari Testarossa from behind on a seafront promenade"
+      },
+      {
+        "src": "./images/automotive-29.webp",
+        "full": "./images/automotive-29-full.webp",
+        "w": 1800,
+        "h": 2250,
+        "alt": "Yellow Ferrari Testarossa head-on on a seafront promenade"
       }
     ]
   },

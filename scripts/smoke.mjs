@@ -177,7 +177,7 @@ async function run() {
 
     // ---- invariants ----
     console.log('\ninvariants:');
-    const expected = { automotive: 21, portraits: 17, 'automotive-portraits': 24, products: 15, pets: 9 };
+    const expected = { automotive: 27, portraits: 17, 'automotive-portraits': 24, products: 15, pets: 9 };
     for (const [k, n] of Object.entries(expected)) {
       SECTIONS[k]?.items.length === n
         ? ok(`${k}: ${n} photos`)
@@ -189,9 +189,12 @@ async function run() {
         ? ok(`"see all" card for ${key} shows ${shown}`)
         : fail(`"see all" card for ${key} shows ${shown}, data has ${expected[key]}`);
     }
-    SECTIONS.automotive.items.every((i) => i.chip)
-      ? ok('every automotive item has an EXIF chip')
-      : fail('some automotive items missing chip');
+    // The portfolio's random hero shows an EXIF overlay and only ever picks from
+    // the original 13 shots (first 14 minus index 4 — see initAutomotive), so
+    // those must have a chip. Later additions may lack one (stripped EXIF).
+    SECTIONS.automotive.items.slice(0, 14).filter((_, i) => i !== 4).every((i) => i.chip)
+      ? ok('every automotive hero-pool item has an EXIF chip')
+      : fail('some automotive hero-pool items missing chip');
     (index.match(/<img /g) || []).length >= 40
       ? ok(`index.html has ${(index.match(/<img /g) || []).length} <img> tags`)
       : fail('index.html has too few <img> tags');

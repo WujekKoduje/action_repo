@@ -8,6 +8,8 @@
  *
  * Per item:
  *   file     – source filename inside the handoff `uploads/` folder
+ *   dir      – optional: absolute folder to read `file` from instead (for photos
+ *              that arrived outside the handoff, whose names may collide)
  *   slug     – output basename (`<slug>.webp` + `<slug>-full.webp`)
  *   alt      – accessible description
  *   camera   – EXIF line 1 (automotive only)   e.g. "FUJIFILM X-T3 · XF56mm F1.2"
@@ -15,7 +17,11 @@
  *   caption  – italic hover caption (portraits / cars & people)
  */
 
-/** @typedef {{file:string, slug:string, alt:string, camera?:string, settings?:string, caption?:string}} Photo */
+/** @typedef {{file:string, dir?:string, slug:string, alt:string, camera?:string, settings?:string, caption?:string}} Photo */
+
+// WeTransfer of 2026-11-06 — its names (image00001…) collide with different
+// photos in the handoff uploads, hence the per-item `dir`.
+const WT_2026_11 = 'C:/Users/LukaszMatysiak/Downloads/wetransfer_image00001-jpeg_2026-11-06_1042';
 
 /** @type {Record<string, { title: string, navLabel: string, items: Photo[] }>} */
 export const SECTIONS = {
@@ -44,6 +50,13 @@ export const SECTIONS = {
       { file: 'image00001.jpeg', slug: 'automotive-21', alt: 'Yellow Porsche Cayman GT4 in an underpass, framed by a blurred headlight', camera: 'Canon EOS-1D X · EF70-200mm f/2.8L IS III', settings: '70mm · f/2.8 · 1/1250s · ISO 200' },
       { file: 'image00002.jpeg', slug: 'automotive-22', alt: 'Yellow Porsche Cayman GT4 from behind on a sunlit road', camera: 'Canon EOS-1D X · EF70-200mm f/2.8L IS III', settings: '70mm · f/2.8 · 1/640s · ISO 320' },
       { file: 'image00003.jpeg', slug: 'automotive-23', alt: 'Yellow Cayman GT4 and black Porsche Cayman under a bridge', camera: 'Canon EOS-1D X · EF70-200mm f/2.8L IS III', settings: '70mm · f/2.8 · 1/1000s · ISO 200' },
+      { dir: WT_2026_11, file: 'image00001.jpeg', slug: 'automotive-24', alt: 'Yellow Renault Mégane RS from behind beside a modern office building', camera: 'Canon EOS-1D X · EF70-200mm f/2.8L IS III', settings: '123mm · f/2.8 · 1/500s · ISO 200' },
+      { dir: WT_2026_11, file: 'image00002.jpeg', slug: 'automotive-25', alt: 'Yellow Renault Mégane RS on a ramp lined with autumn ivy', camera: 'Canon EOS-1D X · EF16-35mm f/4L IS', settings: '35mm · f/4 · 1/400s · ISO 200' },
+      { dir: WT_2026_11, file: 'image00003.jpeg', slug: 'automotive-26', alt: 'Red Audi hatchback in an industrial yard with machinery behind', camera: 'FUJIFILM X-T3 · XF16-55mm F2.8', settings: '16mm · f/11 · 1/240s · ISO 640' },
+      { dir: WT_2026_11, file: 'image00004.jpeg', slug: 'automotive-27', alt: 'Low black coupe parked in an industrial yard under a crane', camera: 'FUJIFILM X-T3 · XF16-55mm F2.8', settings: '16mm · f/2.8 · 1/3800s · ISO 640' },
+      // 28 / 29 carry no EXIF (cropped exports), so they have no camera chip.
+      { dir: WT_2026_11, file: 'image00005.jpeg', slug: 'automotive-28', alt: 'Yellow Ferrari Testarossa from behind on a seafront promenade' },
+      { dir: WT_2026_11, file: 'image00006.jpeg', slug: 'automotive-29', alt: 'Yellow Ferrari Testarossa head-on on a seafront promenade' },
     ],
   },
 

@@ -92,6 +92,10 @@ async function run() {
   // Track every file we (re)generate so stale outputs can be pruned.
   const produced = new Set();
   const missing = [];
+  // Originals that weren't found but whose committed outputs were left alone.
+  // (The originals aren't in the repo, so a run against a folder that lacks
+  // some of them must not prune or drop photos that are already published.)
+  const kept = [];
 
   // ---- Hero -------------------------------------------------------------
   if (!DATA_ONLY) {
@@ -100,6 +104,9 @@ async function run() {
       await makeWebp(src, join(OUT_DIR, 'hero.webp'), 2560, 82);
       produced.add('hero.webp');
       console.log('  ok    hero.webp');
+    } else if (existsSync(join(OUT_DIR, 'hero.webp'))) {
+      produced.add('hero.webp');
+      kept.push(HERO.file);
     } else missing.push(HERO.file);
   }
 
@@ -113,13 +120,18 @@ async function run() {
       const display = `${item.slug}.webp`;
       const full = `${item.slug}-full.webp`;
       let dim;
-      if (DATA_ONLY) {
-        if (!existsSync(join(OUT_DIR, display))) { missing.push(display); continue; }
+      // `item.dir` lets a photo come from a folder other than the handoff's
+      // uploads (e.g. a later WeTransfer whose names would collide).
+      const src = join(item.dir || SRC_DIR, item.file);
+      if (DATA_ONLY || !existsSync(src)) {
+        if (!existsSync(join(OUT_DIR, display)) || !existsSync(join(OUT_DIR, full))) {
+          missing.push(DATA_ONLY ? display : item.file);
+          continue;
+        }
+        if (!DATA_ONLY) kept.push(item.file);
         const m = await sharp(join(OUT_DIR, display)).metadata();
         dim = { w: m.width, h: m.height };
       } else {
-        const src = join(SRC_DIR, item.file);
-        if (!existsSync(src)) { missing.push(item.file); continue; }
         dim = await makeWebp(src, join(OUT_DIR, display), sizing.display, sizing.displayQ);
         await makeWebp(src, join(OUT_DIR, full), sizing.full, sizing.fullQ);
       }
@@ -145,11 +157,12 @@ async function run() {
   const cameraShots = [];
   for (const shot of CAMERA_SHOTS) {
     const out = `${shot.slug}.webp`;
-    if (DATA_ONLY) {
-      if (!existsSync(join(OUT_DIR, out))) { missing.push(out); continue; }
+    const shotSrc = join(SRC_DIR, shot.file);
+    if (DATA_ONLY || !existsSync(shotSrc)) {
+      if (!existsSync(join(OUT_DIR, out))) { missing.push(DATA_ONLY ? out : shot.file); continue; }
+      if (!DATA_ONLY) kept.push(shot.file);
     } else {
-      const src = join(SRC_DIR, shot.file);
-      if (!existsSync(src)) { missing.push(shot.file); continue; }
+      const src = shotSrc;
       await sharp(src)
         .rotate()
         .resize(LCD.w, LCD.h, { fit: 'cover' })
@@ -166,7 +179,10 @@ async function run() {
     if (DATA_ONLY) { produced.add(logo.out); continue; }
     const src = join(SRC_DIR, logo.file);
     if (!existsSync(src)) {
-      missing.push(logo.file);
+      if (existsSync(join(OUT_DIR, logo.out))) {
+        produced.add(logo.out);
+        kept.push(logo.file);
+      } else missing.push(logo.file);
       continue;
     }
     const dst = join(OUT_DIR, logo.out);
@@ -218,8 +234,12 @@ async function run() {
   await writeFile(DATA_FILE, banner + '\n' + body, 'utf8');
   console.log(`\n  ok    ${DATA_FILE}`);
 
+  if (kept.length) {
+    console.warn(`\n  NOTE: ${kept.length} original(s) not found — kept their existing outputs untouched:`);
+    kept.forEach((f) => console.warn(`    - ${f}`));
+  }
   if (missing.length) {
-    console.warn(`\n  WARNING: ${missing.length} source file(s) not found:`);
+    console.warn(`\n  WARNING: ${missing.length} source file(s) not found and no existing output either:`);
     missing.forEach((f) => console.warn(`    - ${f}`));
   }
   console.log('\nDone.');
