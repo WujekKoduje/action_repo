@@ -5,7 +5,12 @@
    it. It records what the browser actually delivers for each touch: which
    element got it, what was under the finger, whether a click followed, whether
    the page was still scrolling, and the viewport state. A tap that produces no
-   click is flagged with "!!". Loaded on demand only — see main.js. */
+   click is flagged with "!!". Loaded on demand only — see main.js.
+
+   Modes (for bisecting a bug that only shows WITHOUT the full logger):
+     ?debug=taps    everything below
+     ?debug=listen  the same listeners, all doing nothing; no overlay
+     ?debug=panel   just the overlay, no listeners */
 
 const MAX_LINES = 18;
 const TAP_MAX_MS = 500;
@@ -21,9 +26,7 @@ function describe(el) {
   return s.slice(0, 46);
 }
 
-export function startTapDebug() {
-  const t0 = performance.now();
-  const lines = [];
+function makePanel() {
   const panel = document.createElement('pre');
   panel.setAttribute('aria-hidden', 'true');
   panel.style.cssText =
@@ -31,6 +34,23 @@ export function startTapDebug() {
     'background:rgba(0,0,0,.85);color:#7dffa1;font:10px/1.35 ui-monospace,Menlo,Consolas,monospace;' +
     'white-space:pre-wrap;word-break:break-all;pointer-events:none;';
   document.body.appendChild(panel);
+  return panel;
+}
+
+export function startTapDebug(mode = 'taps') {
+  if (mode === 'panel') {
+    makePanel().textContent = 'debug=panel: overlay only, no listeners';
+    return;
+  }
+  if (mode === 'listen') {
+    ['scroll', 'touchstart', 'touchmove', 'touchend', 'touchcancel', 'pointercancel', 'click', 'pagehide']
+      .forEach((t) => addEventListener(t, () => {}, { capture: true, passive: true }));
+    return;
+  }
+
+  const t0 = performance.now();
+  const lines = [];
+  const panel = makePanel();
 
   const log = (msg) => {
     const line = `${((performance.now() - t0) / 1000).toFixed(1)}s ${msg}`;

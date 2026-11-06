@@ -37,18 +37,26 @@ function initIntro() {
   // first gesture can simply scroll the page underneath while it fades out.
   let dismissed = false;
 
-  const events = ['wheel', 'touchstart', 'keydown', 'click', 'scroll'];
+  // `touchstart` is deliberately never removed (it is a no-op after the first
+  // call). On a phone, a fresh load needed a second tap on any link, while
+  // loads that skip the intro (no touch listener at all) or run with the
+  // ?debug=taps logger (touch listeners that stay registered) were fine — the
+  // only bad case was removing the page's last touch listener from inside the
+  // touch it was handling.
+  const removable = ['wheel', 'keydown', 'click', 'scroll'];
   const dismiss = (e) => {
     if (dismissed) return;
     // Ignore scroll events that don't actually move the page.
     if (e && e.type === 'scroll' && window.scrollY < 2) return;
     dismissed = true;
-    events.forEach((t) => window.removeEventListener(t, dismiss));
+    removable.forEach((t) => window.removeEventListener(t, dismiss));
     intro.classList.add('intro--hidden');
     window.setTimeout(() => intro.remove(), 650);
   };
 
-  events.forEach((t) => window.addEventListener(t, dismiss, { passive: true }));
+  [...removable, 'touchstart'].forEach((t) =>
+    window.addEventListener(t, dismiss, { passive: true })
+  );
 }
 
 /* ---------- Hash scroll on load (nav-height aware) ---------- */
@@ -327,9 +335,11 @@ function boot() {
   });
 
   // Opt-in on-screen tap logger for debugging touch problems on a real phone.
-  // Loaded on demand, so it costs nothing unless the URL has ?debug=taps.
-  if (new URLSearchParams(location.search).get('debug') === 'taps') {
-    import('./tap-debug.js').then((m) => m.startTapDebug());
+  // Loaded on demand, so it costs nothing unless the URL has ?debug=taps
+  // (or =listen / =panel, the single-factor variants — see tap-debug.js).
+  const debugMode = new URLSearchParams(location.search).get('debug');
+  if (['taps', 'listen', 'panel'].includes(debugMode)) {
+    import('./tap-debug.js').then((m) => m.startTapDebug(debugMode));
   }
 }
 
