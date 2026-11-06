@@ -165,16 +165,6 @@ export const SECTIONS = {
         "settings": "40mm · f/2 · 1/200s · ISO 5000"
       },
       {
-        "src": "./images/automotive-17.webp",
-        "full": "./images/automotive-17-full.webp",
-        "w": 1800,
-        "h": 2700,
-        "alt": "Cupra rear light bar glowing in a car park",
-        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 40mm · f/2 · 1/200s · ISO 5000",
-        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
-        "settings": "40mm · f/2 · 1/200s · ISO 5000"
-      },
-      {
         "src": "./images/automotive-18.webp",
         "full": "./images/automotive-18-full.webp",
         "w": 1800,
@@ -183,16 +173,6 @@ export const SECTIONS = {
         "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 40mm · f/2 · 1/200s · ISO 6400",
         "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
         "settings": "40mm · f/2 · 1/200s · ISO 6400"
-      },
-      {
-        "src": "./images/automotive-19.webp",
-        "full": "./images/automotive-19-full.webp",
-        "w": 1800,
-        "h": 1200,
-        "alt": "Cupra Formentor rear three-quarter in an industrial hall",
-        "chip": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art · 17mm · f/2 · 1/200s · ISO 4000",
-        "camera": "FUJIFILM X-T3 · Sigma 17-40mm F1.8 Art",
-        "settings": "17mm · f/2 · 1/200s · ISO 4000"
       },
       {
         "src": "./images/automotive-20.webp",
