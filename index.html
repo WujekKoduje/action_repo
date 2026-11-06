@@ -3,26 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script>
-    /* iPhone Safari workaround. Opening the plain URL by typing it into the
-       address bar leaves the first tap on the page ignored (reproduced on iOS
-       18; the same page opened from a link, or with ANY query string, is fine).
-       So on an iPhone landing on the bare URL, reload once with a throwaway
-       query — that load behaves — then strip the query from the address bar.
-       Skipped for section links (#hash), URLs that already have a query, and
-       crawlers. Remove once Safari/the page no longer needs it. */
-    (function () {
-      var ua = navigator.userAgent;
-      if (!/iPhone|iPod/.test(ua) || /bot|spider|crawl/i.test(ua)) return;
-      var l = location;
-      if (!l.search && !l.hash) {
-        document.documentElement.style.visibility = 'hidden';
-        l.replace(l.pathname + '?r=' + Date.now().toString(36));
-      } else if (/^\?r=[a-z0-9]+$/.test(l.search)) {
-        history.replaceState(null, '', l.pathname + l.hash);
-      }
-    })();
-  </script>
   <title>Łukasz Matysiak — Automotive &amp; Portrait Photographer, Kraków</title>
   <meta name="description" content="Portfolio of Łukasz Matysiak (Wujek Baca), automotive and portrait photographer based in Kraków, Poland. Light finds the shape. The shutter keeps it." />
   <meta name="author" content="Łukasz Matysiak" />

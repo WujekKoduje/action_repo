@@ -93,10 +93,22 @@ missing). All photographs are Łukasz Matysiak's own work.
 
 On iOS Safari, opening the bare URL by **typing it into the address bar** left
 the first tap on the page ignored. The same page opened from a link (e.g. in
-Messages), or with *any* query string, was fine, so it isn't in the page's
-JavaScript. `index.html` therefore has a tiny inline script that, on iPhone
-only, reloads the bare URL once with a throwaway `?r=…` and strips it from the
-address bar again (no extra history entry; section links, existing queries,
-crawlers and non-iPhones are untouched). Remove it if Safari stops needing it.
+Messages), or with *any* query string, was fine, so it isn't in the page's own
+logic and we never pinned the browser-side cause. `src/tap-fallback.js` treats
+the symptom instead: on iPhone only, if a clear tap on a link, button or photo
+ends and no click follows within 300 ms, it delivers the click itself (a click
+the browser sends late is swallowed, so nothing fires twice). Normal taps,
+swipes and long presses are untouched.
+
+The intro overlay (`initIntro` in `src/main.js`) is deliberately inert for the
+same reason: the first-tap loss only happened when the intro was dismissed by
+*swiping* (not by tapping), so the overlay is `pointer-events: none` (touches go
+to the page beneath, the nav is held inert until it's dismissed), no listener is
+added or removed mid-touch, and the element is only deleted after scrolling has
+been still for 700 ms.
+
 `?debug=taps&keep=1` (and `/?debug=off`) switch on an on-screen touch logger
-(`src/tap-debug.js`) for investigating this kind of problem on a real phone.
+(`src/tap-debug.js`) for investigating this on a real phone: it shows the
+build that actually ran, how the page was requested, and a `>> FALLBACK` line
+whenever the fallback had to step in. Remove both modules if Safari stops
+needing them.

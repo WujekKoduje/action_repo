@@ -113,10 +113,20 @@ img {
   opacity: 1;
   transition: opacity 0.6s ease;
   cursor: pointer;
+  /* Never a touch target: touches go to the page beneath (see initIntro). */
+  pointer-events: none;
 }
 
 .intro--hidden {
   opacity: 0;
+  visibility: hidden;
+  /* Hide it from painting only once the fade has finished. */
+  transition: opacity 0.6s ease, visibility 0s linear 0.6s;
+}
+
+/* The nav sits visibly under the (now non-interactive) intro — keep it from
+   being tapped through the overlay until the intro is dismissed. */
+html.intro-on .nav {
   pointer-events: none;
 }
 

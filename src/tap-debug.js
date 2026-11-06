@@ -100,6 +100,11 @@ export function startTapDebug(mode = 'taps', sticky = false, bootVisibility = '?
       `${state()} bootVis=${bootVisibility} prerender=${document.prerendering === true}`
   );
   logHead(`intro=${introUp()} ${vv()} scrollY=${Math.round(scrollY)} dpr=${devicePixelRatio.toFixed(1)} ${innerWidth}x${innerHeight}`);
+  // Which build actually ran (rules out a stale cached copy of the page) and how it was requested.
+  const mainSrc = [...document.scripts].map((s) => s.src).find((s) => /\/main-[^/]+\.js/.test(s)) || '';
+  const build = (mainSrc.match(/main-([A-Za-z0-9_-]+)\.js/) || [])[1] || 'dev';
+  const req = nav ? nav.name.replace(location.origin, '') : '?';
+  logHead(`build=${build} req=${req}`);
 
   const opts = { capture: true, passive: true };
 
@@ -159,6 +164,7 @@ export function startTapDebug(mode = 'taps', sticky = false, bootVisibility = '?
     log(`CLICK  ${describe(e.target)}  prevented=${e.defaultPrevented}`);
   }, opts);
 
+  addEventListener('wb-tap-fallback', (e) => log(`>> FALLBACK: tap had no click, delivered one to ${describe(e.detail.el)}`), opts);
   addEventListener('pagehide', () => logLife('pagehide (navigating away)'), opts);
   addEventListener('pageshow', (e) => logLife(`pageshow persisted=${e.persisted}`), opts);
   document.addEventListener('visibilitychange', () => logLife(`visibility -> ${document.visibilityState}`));

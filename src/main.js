@@ -2,6 +2,7 @@ import './styles.css';
 import { SECTIONS } from './gallery-data.js';
 import { initMenu } from './menu.js';
 import { initLightbox } from './lightbox.js';
+import { initTapFallback } from './tap-fallback.js';
 
 /* ============================================================
    Wujek Baca portfolio — behaviour
@@ -34,25 +35,46 @@ function initIntro() {
     return;
   }
 
-  // The page is deliberately NOT scroll-locked while the intro shows. Locking
-  // `body { overflow: hidden }` and releasing it inside the first touch made
-  // that first swipe do nothing (it only dismissed the intro) and left phones
-  // needing a second tap afterwards. The intro is a fixed overlay, so the
-  // first gesture can simply scroll the page underneath while it fades out.
-  let dismissed = false;
+  // The intro is a purely visual overlay. Observed on iPhone: dismissing it by
+  // SWIPING left the next tap on a link ignored, while dismissing it by tapping
+  // was fine. A tap is over in milliseconds, but a swipe leaves the page
+  // gliding — and the intro used to be the touch target, got switched off
+  // mid-touch, and was deleted ~0.65s later while that glide was still going.
+  // So now: it never receives touches (pointer-events:none in CSS), nothing is
+  // added or removed mid-touch (every listener stays registered; they are
+  // no-ops once dismissed), and the element is only deleted after scrolling
+  // has been idle. The page is also never scroll-locked, so the first swipe
+  // simply scrolls it underneath while the intro fades.
+  const root = document.documentElement;
+  root.classList.add('intro-on'); // keeps the nav (visible beneath) from being tapped through the overlay
 
-  const events = ['wheel', 'touchstart', 'keydown', 'click', 'scroll'];
+  let dismissed = false;
+  let removeTimer = 0;
+  const finish = () => {
+    window.removeEventListener('scroll', scheduleRemoval);
+    intro.remove();
+  };
+  // Restarted by every scroll event, so it only fires once the page has been
+  // still for a while — and never sooner than the 0.6s fade.
+  function scheduleRemoval() {
+    clearTimeout(removeTimer);
+    removeTimer = setTimeout(finish, 700);
+  }
+
   const dismiss = (e) => {
     if (dismissed) return;
     // Ignore scroll events that don't actually move the page.
     if (e && e.type === 'scroll' && window.scrollY < 2) return;
     dismissed = true;
-    events.forEach((t) => window.removeEventListener(t, dismiss));
+    root.classList.remove('intro-on');
     intro.classList.add('intro--hidden');
-    window.setTimeout(() => intro.remove(), 650);
+    window.addEventListener('scroll', scheduleRemoval, { passive: true });
+    scheduleRemoval();
   };
 
-  events.forEach((t) => window.addEventListener(t, dismiss, { passive: true }));
+  ['wheel', 'touchstart', 'keydown', 'click', 'scroll'].forEach((t) =>
+    window.addEventListener(t, dismiss, { passive: true })
+  );
 }
 
 /* ---------- Hash scroll on load (nav-height aware) ---------- */
@@ -326,6 +348,7 @@ function boot() {
   initStats();
   initContactLinks();
   initScrollFx();
+  initTapFallback();
   initLightbox({
     getGroup: (img) => $$('img', img.closest('[data-lightbox]') || document),
   });
