@@ -88,3 +88,15 @@ The credit lives in `camera.html` (`.attr`, bottom-left) and **must stay in the
 page**: it is deliberately very quiet, and comes up to full contrast on hover /
 keyboard focus — quiet is fine, hidden is not (`npm test` fails if it goes
 missing). All photographs are Łukasz Matysiak's own work.
+
+## Known browser quirk: iPhone Safari, typed URL
+
+On iOS Safari, opening the bare URL by **typing it into the address bar** left
+the first tap on the page ignored. The same page opened from a link (e.g. in
+Messages), or with *any* query string, was fine, so it isn't in the page's
+JavaScript. `index.html` therefore has a tiny inline script that, on iPhone
+only, reloads the bare URL once with a throwaway `?r=…` and strips it from the
+address bar again (no extra history entry; section links, existing queries,
+crawlers and non-iPhones are untouched). Remove it if Safari stops needing it.
+`?debug=taps&keep=1` (and `/?debug=off`) switch on an on-screen touch logger
+(`src/tap-debug.js`) for investigating this kind of problem on a real phone.
