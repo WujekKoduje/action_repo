@@ -9,10 +9,6 @@ import { initTapFallback } from './tap-fallback.js';
    Ported from the Claude Design prototype (support.js / DCLogic).
    ============================================================ */
 
-// Captured the moment the script first runs, for the ?debug logger: a page the
-// browser preloaded in the background starts out 'hidden'.
-const BOOT_VISIBILITY = document.visibilityState;
-
 const PARALLAX_INTENSITY = 0.4;
 const prefersReducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)'
@@ -352,28 +348,6 @@ function boot() {
   initLightbox({
     getGroup: (img) => $$('img', img.closest('[data-lightbox]') || document),
   });
-
-  // Opt-in on-screen tap logger for debugging touch problems on a real phone.
-  // Loaded on demand, so it costs nothing unless the URL has ?debug=taps
-  // (or =listen / =panel, the single-factor variants — see tap-debug.js).
-  // `&keep=1` makes it sticky (localStorage) so it can run on the plain URL;
-  // `?debug=off` clears that.
-  const params = new URLSearchParams(location.search);
-  let debugMode = params.get('debug');
-  let sticky = false;
-  try {
-    if (debugMode === 'off') localStorage.removeItem('wb-debug');
-    else if (debugMode && params.has('keep')) localStorage.setItem('wb-debug', debugMode);
-    else if (!debugMode) {
-      debugMode = localStorage.getItem('wb-debug');
-      sticky = !!debugMode;
-    }
-  } catch {
-    /* storage unavailable (private mode) — only the URL form works */
-  }
-  if (['taps', 'listen', 'panel'].includes(debugMode)) {
-    import('./tap-debug.js').then((m) => m.startTapDebug(debugMode, sticky, BOOT_VISIBILITY));
-  }
 }
 
 if (document.readyState === 'loading') {

@@ -49,7 +49,6 @@ export function initTapFallback(enabled = /iPhone|iPod/.test(navigator.userAgent
       if (lastClickAt >= tapAt - 20 || !el.isConnected) return; // the browser clicked, or the page moved on
       delivered = { el, at: performance.now() };
       console.info('[tap-fallback] tap with no click — delivering one to', el);
-      window.dispatchEvent(new CustomEvent('wb-tap-fallback', { detail: { el } }));
       el.click();
     }, CLICK_WAIT_MS);
   }, passive);
