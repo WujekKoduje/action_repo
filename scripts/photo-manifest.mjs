@@ -23,6 +23,9 @@
 // photos in the handoff uploads, hence the per-item `dir`.
 const WT_2026_11 = 'C:/Users/LukaszMatysiak/Downloads/wetransfer_image00001-jpeg_2026-11-06_1042';
 
+// Portraits saved straight into Downloads on 2026-11-27 (shot 16 + 21 Nov).
+const DL_2026_11_27 = 'C:/Users/LukaszMatysiak/Downloads';
+
 /** @type {Record<string, { title: string, navLabel: string, items: Photo[] }>} */
 export const SECTIONS = {
   automotive: {
@@ -83,6 +86,24 @@ export const SECTIONS = {
       { file: '20260708-DSCF6523.jpeg', slug: 'portrait-15', alt: 'Kinetic water sculpture with the model out of focus', caption: 'Kinetic fountain, layered depth of field.' },
       { file: '20260708-DSCF6544-3.jpeg', slug: 'portrait-16', alt: 'Portrait in a metallic dress beside a water sculpture', caption: 'Metallic dress, industrial fountain backdrop.' },
       { file: '20260708-DSCF6555.jpeg', slug: 'portrait-17', alt: 'Portrait leaning against a wire-mesh wall', caption: 'Leaning into the frame, wire-mesh texture.' },
+      { dir: DL_2026_11_27, file: 'DSCF2548.jpg', slug: 'portrait-18', alt: 'Black and white portrait, woman glancing over her shoulder beside a glazed door', caption: 'Over the shoulder, soft window light.' },
+      { dir: DL_2026_11_27, file: 'DSCF2533.jpg', slug: 'portrait-19', alt: 'Black and white portrait, woman in a black dress leaning in front of a glazed door', caption: 'Black dress against bright panes.' },
+      { dir: DL_2026_11_27, file: 'DSCF1918.jpg', slug: 'portrait-20', alt: 'Woman in a white dress standing in a tall arched doorway', caption: 'White dress, framed by the great arch.' },
+      { dir: DL_2026_11_27, file: 'DSCF1907.jpg', slug: 'portrait-21', alt: 'Woman in a white buttoned dress looking up from an open doorway', caption: 'Upward gaze from the open door.' },
+      { dir: DL_2026_11_27, file: 'DSCF2235.jpg', slug: 'portrait-22', alt: 'Woman in a black dress with dotted sheer sleeves beside a gilded mirror', caption: 'Gold frame, second reflection.' },
+      { dir: DL_2026_11_27, file: 'DSCF1298.jpg', slug: 'portrait-23', alt: 'Woman in a red suit and pearl necklace against curved stonework', caption: 'Red tailoring in low light.' },
+      { dir: DL_2026_11_27, file: 'DSCF2457.jpg', slug: 'portrait-24', alt: 'Woman in a cream tulle dress holding a yellow fur coat, arm raised before stone steps', caption: 'Tulle and yellow fur on the front steps.' },
+      { dir: DL_2026_11_27, file: 'DSCF2024.jpg', slug: 'portrait-25', alt: 'Woman in a red gown and white fur stole leaning on a stone balustrade', caption: 'Old glamour on the terrace.' },
+      { dir: DL_2026_11_27, file: 'DSCF1449.jpg', slug: 'portrait-26', alt: 'Woman in a black sequin gown and sheer beaded cape in front of a grand staircase', caption: 'Black sequins between the banisters.' },
+      { dir: DL_2026_11_27, file: 'DSCF1371.jpg', slug: 'portrait-27', alt: 'Full-length portrait, black slit sequin gown at the foot of a double staircase', caption: 'Full length beneath the double stairs.' },
+      { dir: DL_2026_11_27, file: 'DSCF1533.jpg', slug: 'portrait-28', alt: 'Woman in a black sequin gown leaning on a piano with oversized white flowers behind', caption: 'At the old piano, white blooms behind.' },
+      { dir: DL_2026_11_27, file: 'DSCF1645-Edytuj.jpg', slug: 'portrait-29', alt: 'Woman in a red two-piece with long wavy hair looking into the camera by a handrail', caption: 'Red satin, straight into the lens.' },
+      { dir: DL_2026_11_27, file: 'DSCF1633.jpg', slug: 'portrait-30', alt: 'Woman in a red top and ruffled skirt leaning on a wrought-iron balcony, seen from above', caption: 'From above, on the iron balcony.' },
+      { dir: DL_2026_11_27, file: 'DSCF1644.jpg', slug: 'portrait-31', alt: 'Woman in a red two-piece looking aside in warm low light', caption: 'A glance aside in the warm hall.' },
+      { dir: DL_2026_11_27, file: 'DSCF1603.jpg', slug: 'portrait-32', alt: 'Woman in a black gown and long sheer gloves on a balcony under a glass dome', caption: 'Black gown under the glass dome.' },
+      { dir: DL_2026_11_27, file: 'L1020601.jpg', slug: 'portrait-33', alt: 'Woman in a cow-print coat glancing back beside a wooden door on a cobbled street', caption: 'Cow print on the cobbles.' },
+      { dir: DL_2026_11_27, file: 'L1020619.jpg', slug: 'portrait-34', alt: 'Woman in a cow-print coat on wet leaf-strewn steps beside blue iron railings', caption: 'Rainy steps, blue ironwork.' },
+      { dir: DL_2026_11_27, file: 'L1020596-2.jpg', slug: 'portrait-35', alt: 'Close portrait, woman in a cow-print coat and black turtleneck by a wooden door', caption: 'Close and calm against warm wood.' },
     ],
   },
 

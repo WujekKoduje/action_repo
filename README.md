@@ -56,11 +56,13 @@ npm test           # build + scripts/smoke.mjs — HEAD-checks every asset /
 ## Images
 
 The ~500 MB of originals from the design handoff are **not** committed.
-`public/images/` holds the optimized derivatives the site loads (~27 MB, ~92
+`public/images/` holds the optimized derivatives the site loads (~33 MB, 110
 photos × 2 sizes + logos + camera frames) and `src/gallery-data.js` is generated
 alongside them.
 
-Regenerating needs the handoff `uploads/` folder:
+Regenerating needs the handoff `uploads/` folder. Photos added later live
+elsewhere (see each item's `dir` in the manifest); if an original can't be
+found, its published copies are kept as they are:
 
 ```bash
 npm run optimize:images -- "/path/to/handoff/.../project/uploads"

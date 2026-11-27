@@ -177,7 +177,7 @@ async function run() {
 
     // ---- invariants ----
     console.log('\ninvariants:');
-    const expected = { automotive: 27, portraits: 17, 'automotive-portraits': 24, products: 15, pets: 9 };
+    const expected = { automotive: 27, portraits: 35, 'automotive-portraits': 24, products: 15, pets: 9 };
     for (const [k, n] of Object.entries(expected)) {
       SECTIONS[k]?.items.length === n
         ? ok(`${k}: ${n} photos`)
