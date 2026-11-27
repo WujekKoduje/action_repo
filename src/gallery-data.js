@@ -408,6 +408,150 @@ export const SECTIONS = {
         "h": 1800,
         "alt": "Portrait leaning against a wire-mesh wall",
         "caption": "Leaning into the frame, wire-mesh texture."
+      },
+      {
+        "src": "./images/portrait-18.webp",
+        "full": "./images/portrait-18-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Black and white portrait, woman glancing over her shoulder beside a glazed door",
+        "caption": "Over the shoulder, soft window light."
+      },
+      {
+        "src": "./images/portrait-19.webp",
+        "full": "./images/portrait-19-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Black and white portrait, woman in a black dress leaning in front of a glazed door",
+        "caption": "Black dress against bright panes."
+      },
+      {
+        "src": "./images/portrait-20.webp",
+        "full": "./images/portrait-20-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a white dress standing in a tall arched doorway",
+        "caption": "White dress, framed by the great arch."
+      },
+      {
+        "src": "./images/portrait-21.webp",
+        "full": "./images/portrait-21-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a white buttoned dress looking up from an open doorway",
+        "caption": "Upward gaze from the open door."
+      },
+      {
+        "src": "./images/portrait-22.webp",
+        "full": "./images/portrait-22-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a black dress with dotted sheer sleeves beside a gilded mirror",
+        "caption": "Gold frame, second reflection."
+      },
+      {
+        "src": "./images/portrait-23.webp",
+        "full": "./images/portrait-23-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a red suit and pearl necklace against curved stonework",
+        "caption": "Red tailoring in low light."
+      },
+      {
+        "src": "./images/portrait-24.webp",
+        "full": "./images/portrait-24-full.webp",
+        "w": 1200,
+        "h": 1801,
+        "alt": "Woman in a cream tulle dress holding a yellow fur coat, arm raised before stone steps",
+        "caption": "Tulle and yellow fur on the front steps."
+      },
+      {
+        "src": "./images/portrait-25.webp",
+        "full": "./images/portrait-25-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a red gown and white fur stole leaning on a stone balustrade",
+        "caption": "Old glamour on the terrace."
+      },
+      {
+        "src": "./images/portrait-26.webp",
+        "full": "./images/portrait-26-full.webp",
+        "w": 1200,
+        "h": 800,
+        "alt": "Woman in a black sequin gown and sheer beaded cape in front of a grand staircase",
+        "caption": "Black sequins between the banisters."
+      },
+      {
+        "src": "./images/portrait-27.webp",
+        "full": "./images/portrait-27-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Full-length portrait, black slit sequin gown at the foot of a double staircase",
+        "caption": "Full length beneath the double stairs."
+      },
+      {
+        "src": "./images/portrait-28.webp",
+        "full": "./images/portrait-28-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a black sequin gown leaning on a piano with oversized white flowers behind",
+        "caption": "At the old piano, white blooms behind."
+      },
+      {
+        "src": "./images/portrait-29.webp",
+        "full": "./images/portrait-29-full.webp",
+        "w": 1200,
+        "h": 1650,
+        "alt": "Woman in a red two-piece with long wavy hair looking into the camera by a handrail",
+        "caption": "Red satin, straight into the lens."
+      },
+      {
+        "src": "./images/portrait-30.webp",
+        "full": "./images/portrait-30-full.webp",
+        "w": 1200,
+        "h": 1801,
+        "alt": "Woman in a red top and ruffled skirt leaning on a wrought-iron balcony, seen from above",
+        "caption": "From above, on the iron balcony."
+      },
+      {
+        "src": "./images/portrait-31.webp",
+        "full": "./images/portrait-31-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a red two-piece looking aside in warm low light",
+        "caption": "A glance aside in the warm hall."
+      },
+      {
+        "src": "./images/portrait-32.webp",
+        "full": "./images/portrait-32-full.webp",
+        "w": 1200,
+        "h": 1800,
+        "alt": "Woman in a black gown and long sheer gloves on a balcony under a glass dome",
+        "caption": "Black gown under the glass dome."
+      },
+      {
+        "src": "./images/portrait-33.webp",
+        "full": "./images/portrait-33-full.webp",
+        "w": 1200,
+        "h": 1798,
+        "alt": "Woman in a cow-print coat glancing back beside a wooden door on a cobbled street",
+        "caption": "Cow print on the cobbles."
+      },
+      {
+        "src": "./images/portrait-34.webp",
+        "full": "./images/portrait-34-full.webp",
+        "w": 1200,
+        "h": 1798,
+        "alt": "Woman in a cow-print coat on wet leaf-strewn steps beside blue iron railings",
+        "caption": "Rainy steps, blue ironwork."
+      },
+      {
+        "src": "./images/portrait-35.webp",
+        "full": "./images/portrait-35-full.webp",
+        "w": 1200,
+        "h": 801,
+        "alt": "Close portrait, woman in a cow-print coat and black turtleneck by a wooden door",
+        "caption": "Close and calm against warm wood."
       }
     ]
   },
